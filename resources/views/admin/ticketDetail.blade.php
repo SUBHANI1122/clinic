@@ -201,9 +201,10 @@
                     <h3>Clinic Notes</h3>
                     @if ($appointment->clinicNotes)
                     <p><strong>Diabetes Mellitus:</strong> {{ $appointment->clinicNotes->dm ? 'Yes' : 'No' }}</p>
-                    <p><strong>Hypertension:</strong> {{ $appointment->clinicNotes->ht ? 'Yes' : 'No' }}</p>
                     <p><strong>BP:</strong> {{ $appointment->clinicNotes->bp }}</p>
                     <p><strong>Presenting Complaint:</strong> {{ $appointment->clinicNotes->pc }}</p>
+                    <p><strong>Diagnose:</strong> {{ $appointment->clinicNotes->diagnosis }}</p>
+                    <p><strong>Temperature:</strong> {{ $appointment->clinicNotes->temperature }}</p>
                     @else
                     <p>No clinic notes available for this appointment.</p>
                     @endif
@@ -270,8 +271,7 @@
     <div class="divider"></div>
 
     <div class="footer">
-        <p>B.Block Plaza No.42.B, near Fountain Chowk,Citi Housing Society,Sialkot</p>
-        <p>Ph:0332 4276305</p>
+        <p>B.Block Fountain Chowk Near Sadiq Mart. <strong>Ph:0332 4276305</strong></p>
     </div>
 
     <script>

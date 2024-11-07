@@ -21,6 +21,7 @@
                     <tr>
                         <th scope="col">Sr #</th>
                         <th scope="col">Invoice No</th>
+                        <th scope="col">Dr Name</th>
                         <th scope="col">Patient Name</th>
                         <th scope="col">Patient Phone</th>
                         <th scope="col">Age</th>
@@ -36,6 +37,7 @@
                     <tr>
                         <td>{{ $index + 1}}</td>
                         <td>invoice-{{$ticket->id }}</td>
+                        <td>{{ $ticket->doctor->name }}</td>
                         <td>{{ $ticket->patient->name }}</td>
                         <td>{{ $ticket->patient->phone }}</td>
                         <td>{{ $ticket->patient->age }}</td>

@@ -82,7 +82,7 @@
                 },
                 {
                     data: null, 
-                    name: 'name_size',
+                    name: 'name',
                     render: function(data, type, row) {
                         return `${row.name} (${row.size})`;
                     },

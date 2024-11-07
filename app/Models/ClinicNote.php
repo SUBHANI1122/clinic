@@ -17,6 +17,9 @@ class ClinicNote extends Model
         'dm',
         'bp',
         'pc',
+        'diagnosis',
+        'temperature'
+
     ];
 
     // Define relationships if necessary

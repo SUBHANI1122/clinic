@@ -60,9 +60,14 @@
     <div class="invoice-container">
         <div class="header">
             <img src="{{ url('images/logo.png') }}" alt="Clinic Logo">
+            @if($invoiceData['doctor_name'] === 'Dr Ayesha Afraz')
+            <h2>Skin Aesthetic Clinic</h2>
+            @else
             <h2>Medical Care & Physiotherapy Clinic</h2>
+            @endif
+
             <p>B.Block, fountain Chowk, B.Block Plaza No.42.B, near Fountain Chowk, <br>
-                 near Bank Al Falah, Citi Housing Society,  <br>  Sialkot</p>
+                near Bank Al Falah, Citi Housing Society, <br> Sialkot</p>
             <p>Phone: 0332 4276305</p>
         </div>
 
@@ -72,7 +77,7 @@
             <p><strong>Patient Name:</strong> {{ $invoiceData['patient_name'] }}</p>
             <p><strong>Doctor Name:</strong> {{ $invoiceData['doctor_name'] }}</p>
             <p><strong>Department Name:</strong> {{ $invoiceData['department'] }}</p>
-            <p><strong>Procedure Name:</strong> {{ $invoiceData['procedure_name'] }}</p> 
+            <p><strong>Procedure Name:</strong> {{ $invoiceData['procedure_name'] }}</p>
             <p><strong>Appointment Date:</strong> {{ $invoiceData['appointment_date'] }}</p>
             <p><strong>Total Amount:</strong> {{ $invoiceData['total_amount'] }}</p>
         </div>
@@ -93,5 +98,3 @@
 </body>
 
 </html>
-
- 

@@ -43,7 +43,7 @@ class AppoinmentController extends Controller
             'appointment_id' => 'required|exists:appoinments,id', // Fixed typo in 'appointments'
             'bp' => 'nullable|string|max:10',
             'pc' => 'nullable|string|max:255',
-            'diagnosis' => 'nullable|string|max:10',
+            'diagnosis' => 'nullable|string',
             'temperature' => 'nullable|string|max:255',
             'medicines' => 'nullable|array',
             'medicines' => 'nullable|string',
