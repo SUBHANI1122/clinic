@@ -49,12 +49,12 @@ class AppoinmentController extends Controller
             'medicines' => 'nullable|string',
             'lab_tests' => 'nullable|array',
             'lab_tests.*' => 'exists:labs,id',
-            'instruction_ids' => 'nullable|array',
+            'instruction_ids' => 'required|array',
         ]);
 
         $validatedData['dm'] = $request->has('dm');
         $validatedData['ht'] = $request->has('ht');
-        
+
 
         $appointment = Appoinment::findOrFail($validatedData['appointment_id']);
 
@@ -73,13 +73,13 @@ class AppoinmentController extends Controller
         DB::table('appointment_medicine')->where(['appointment_id' => $appointment->id])->delete();
 
         if ($request->filled('medicines')) {
-            $medicines = json_decode($validatedData['medicines'], true); 
+            $medicines = json_decode($validatedData['medicines'], true);
 
             foreach ($medicines as $index => $medicine) {
                 $medicineId = $medicine['id'];
                 $days = isset($medicine['days']) ? $medicine['days'] : null;
 
-                $mealTiming = $request->meal_timing[$index] ?? null; 
+                $mealTiming = $request->meal_timing[$index] ?? null;
 
                 $morning = isset($request->time_slots[$medicineId]) && in_array('morning', $request->time_slots[$medicineId]);
                 $afternoon = isset($request->time_slots[$medicineId]) && in_array('afternoon', $request->time_slots[$medicineId]);
@@ -89,8 +89,8 @@ class AppoinmentController extends Controller
                     'appointment_id' => $request->appointment_id,
                     'medicine_id' => $medicineId,
                     'days' => $days,
-                    'meal_timing' => $mealTiming, 
-                    'morning' => $morning, 
+                    'meal_timing' => $mealTiming,
+                    'morning' => $morning,
                     'afternoon' => $afternoon,
                     'evening' => $evening,
                     'created_at' => now(),
@@ -119,6 +119,19 @@ class AppoinmentController extends Controller
         // return redirect()->route('ticketDetail', ['id' => $appointment->id]);
 
         return response()->json(['success' => true, 'message' => 'Appointment details added successfully.', 'id' => $appointment->id]);
+    }
+
+    public function addDiscount(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'discount_amount' => 'required|numeric',
+        ]);
+
+        $ticket = Appoinment::findOrFail($request->ticket_id);
+        $ticket->discount = $request->discount_amount;
+        $ticket->save();
+        return response()->json(['success' => true]);
     }
 
     /**

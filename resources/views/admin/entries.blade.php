@@ -19,29 +19,43 @@
             <table class="table table-bordered" id="entries-table">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">Sr #</th>
+                        <th scope="col">Invoice No</th>
                         <th scope="col">Patient Name</th>
+                        <th scope="col">Patient Phone</th>
                         <th scope="col">Age</th>
                         <th scope="col">Address</th>
                         <th scope="col">Appointment Date</th>
+                        <th scope="col">Total Amount</th>
+                        <th scope="col">Discount Amount</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($tickets as $index => $ticket)
                     <tr>
-                        <td>{{ $ticket->id }}</td>
+                        <td>{{ $index + 1}}</td>
+                        <td>invoice-{{$ticket->id }}</td>
                         <td>{{ $ticket->patient->name }}</td>
+                        <td>{{ $ticket->patient->phone }}</td>
                         <td>{{ $ticket->patient->age }}</td>
                         <td>{{ $ticket->patient->address }}</td>
-                        <td>{{ $ticket->appointment_date }}</td>
+                        <td>{{ \Carbon\Carbon::parse($ticket->appointment_date)->format('d-m-y') }}</td>
+                        <td>{{ $ticket->total_amount }}</td>
+                        <td>{{ $ticket->discount }}</td>
                         <td>
                             <a href="{{ route('ticketDetail', ['id' => $ticket->id]) }}"
                                 class="text-decoration-none text-success" style="font-size:14px">View Details</a>
                             @if (Auth::user()->type == 'doctor')
                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#addAppointmentDetailsModal" data-id="{{ $ticket->id }}">
+                                data-bs-target="#addAppointmentDetailsModal" data-id="{{ $ticket->id }}" data-doctor="{{$ticket->doctor->name}}">
                                 Add Items
+                            </button>
+                            @endif
+                            @if (Auth::user()->type == 'admin')
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#discountModal" data-id="{{ $ticket->id }}">
+                                Add Discount
                             </button>
                             @endif
                         </td>
@@ -51,6 +65,29 @@
             </table>
         </div>
     </div>
+
+    <!-- Discount Modal -->
+    <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="discountModalLabel">Add Discount</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="discountForm">
+                        <div class="mb-3">
+                            <label for="discount" class="form-label">Discount Amount</label>
+                            <input type="number" class="form-control" id="discount" name="discount" required>
+                        </div>
+                        <input type="hidden" id="ticketId" name="ticketId">
+                        <button type="submit" class="btn btn-primary">Save Discount</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Add Appointment Details Modal -->
     <div class="modal fade" id="addAppointmentDetailsModal" tabindex="-1" aria-labelledby="addAppointmentDetailsModalLabel" aria-hidden="true">
@@ -63,40 +100,37 @@
                     </div>
                     <div class="modal-body p-4"> <!-- Added padding -->
                         <input type="hidden" name="appointment_id" id="appointment_id">
+                        <div class="therapy">
+                            <!-- Clinic Notes Section -->
+                            <h6 class="text-primary mt-3">Clinic Notes</h6>
+                            <hr>
 
-                        <!-- Clinic Notes Section -->
-                        <h6 class="text-primary mt-3">Clinic Notes</h6>
-                        <hr>
-                        <div class="mb-4 row"> <!-- Increased spacing for rows -->
-                            <label class="col-md-2 col-form-label">DM</label>
-                            <div class="col-md-4">
-                                <input type="checkbox" name="dm" id="dm" class="form-check-input me-2">
-                                <label for="dm" class="form-check-label">Diabetes Mellitus</label>
+                            <div class="mb-4 row"> <!-- Increased spacing for rows -->
+                                <label class="col-md-2 col-form-label">DM</label>
+                                <div class="col-md-4">
+                                    <input type="checkbox" name="dm" id="dm" class="form-check-input me-2">
+                                    <label for="dm" class="form-check-label">Diabetes Mellitus</label>
+                                </div>
                             </div>
-                            <label class="col-md-2 col-form-label">HT</label>
-                            <div class="col-md-4">
-                                <input type="checkbox" name="ht" id="ht" class="form-check-input me-2">
-                                <label for="ht" class="form-check-label">Hypertension</label>
+                            <div class="mb-4 row">
+                                <label class="col-md-1 col-form-label">BP</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="bp" class="form-control" placeholder="e.g., 130/90">
+                                </div>
+                                <label class="col-md-1 col-form-label">PC</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="pc" class="form-control" placeholder="Presenting Complaint">
+                                </div>
                             </div>
-                        </div>
-                        <div class="mb-4 row">
-                            <label class="col-md-1 col-form-label">BP</label>
-                            <div class="col-md-5">
-                                <input type="text" name="bp" class="form-control" placeholder="e.g., 130/90">
-                            </div>
-                            <label class="col-md-1 col-form-label">PC</label>
-                            <div class="col-md-5">
-                                <input type="text" name="pc" class="form-control" placeholder="Presenting Complaint">
-                            </div>
-                        </div>
-                        <div class="mb-4 row">
-                            <label class="col-md-1 col-form-label">Diagnosis</label>
-                            <div class="col-md-5">
-                                <input type="text" name="diagnosis" class="form-control" placeholder="e.g Diagnosis">
-                            </div>
-                            <label class="col-md-1 col-form-label">Temprature</label>
-                            <div class="col-md-5">
-                                <input type="text" name="temperature" class="form-control" placeholder="Presenting Temprature">
+                            <div class="mb-4 row">
+                                <label class="col-md-1 col-form-label">Diagnosis</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="diagnosis" class="form-control" placeholder="e.g Diagnosis">
+                                </div>
+                                <label class="col-md-1 col-form-label">Temprature</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="temperature" class="form-control" placeholder="Presenting Temprature">
+                                </div>
                             </div>
                         </div>
 
@@ -292,6 +326,10 @@
         // Set appointment ID in modal
         $('button[data-bs-target="#addAppointmentDetailsModal"]').on('click', function() {
             $('#appointment_id').val($(this).data('id'));
+            var doctor = $(this).data('doctor');
+            if (doctor === 'Dr Ayesha Afraz') {
+                $('.therapy').css('display', 'none'); // Corrected the selector and method
+            }
         });
 
         // Add appointment details form submission
@@ -409,6 +447,53 @@
             $medicineForm[0].reset();
             $medicineSuggestions.hide();
             $selectedMedicinesTable.empty();
+        });
+
+        $('#discountModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var ticketId = button.data('id');
+            $('#ticketId').val(ticketId);
+        });
+
+        // Handle form submission
+        $('#discountForm').submit(function(event) {
+            event.preventDefault();
+
+            var ticketId = $('#ticketId').val();
+            var discountAmount = $('#discount').val();
+
+            $.ajax({
+                url: '{{ route("addDiscount") }}', 
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    ticket_id: ticketId,
+                    discount_amount: discountAmount
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('tr').each(function() {
+                            if ($(this).find('td').eq(1).text().trim() == "invoice-" + ticketId) {
+                                $(this).find('td').eq(7).text('Discount: ' + discountAmount);
+                            }
+                        });
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Discount Added',
+                            text: 'Discount has been successfully added to the invoice.',
+                        });
+
+                        // Close the modal
+                        $('#discountModal').modal('hide');
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong. Please try again.',
+                        });
+                    }
+                }
+            });
         });
     });
 </script>
