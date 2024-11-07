@@ -8,30 +8,30 @@
 
     <title>{{ config('app.name', 'Medical Care & Physiotherapy Clinic') }}</title>
 
-    <!-- CSS Libraries -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
 
 
-
-    <!-- Custom Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script> <!-- Remove defer -->
+    <!-- jQuery and DataTables Libraries -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" defer></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Include Select2 JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <!-- DataTables Buttons and Export Scripts -->
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js" defer></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.bootstrap5.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" defer></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js" defer></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+
 
     <!-- Custom Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -43,6 +43,7 @@
         });
     </script>
 </head>
+
 
 
 
@@ -121,7 +122,7 @@
                                         &nbsp;Instructions</span></a>
                             </li>
 
-                            
+
                             @endif
 
                             @if(Auth::user()->type == 'doctor')
@@ -205,28 +206,30 @@
 </script>
 <script type="text/Javascript">
     $(document).ready(function(){
-        $('#entries-table').DataTable({
-        dom: 'Bfrtip', // Add buttons to the DataTable
+        $(document).ready(function() {
+    $('#entries-table').DataTable({
+        dom: 'Bfrtip',
         buttons: [
             {
                 extend: 'excelHtml5',
                 text: 'Export to Excel',
                 title: 'Appointments',
                 exportOptions: {
-                    columns: [0, 1, 2, 3, 4] // Indices of the columns to export
+                    columns: [0, 1, 2, 3, 4, 5, 6,7,8]
                 }
             },
+        ],
+        columnDefs: [
             {
-                extend: 'csvHtml5',
-                text: 'Export to CSV',
-                title: 'Appointments',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4] // Indices of the columns to export
-                }
+                targets: 0,
+                orderable: false 
             }
         ],
-        // Additional DataTable configurations can go here
+        order: [[5, 'desc']] 
     });
+});
+
+
 
     })
 </script>

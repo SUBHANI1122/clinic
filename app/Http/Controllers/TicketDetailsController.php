@@ -101,7 +101,7 @@ class TicketDetailsController extends Controller
             ->when(Auth::user()->type !== 'admin', function ($query) {
                 $query->where('doctor_id', Auth::user()->id);
             })
-            ->orderBy('id', 'DESC')
+            ->orderBy('id', 'desc')
             ->get();
         $medicines = Medicine::get();
         $instructions = Instructions::get();
@@ -120,7 +120,7 @@ class TicketDetailsController extends Controller
                 $query->where('doctor_id', Auth::user()->id);
             })
             ->whereDate('appointment_date', $today) 
-            ->orderBy('id', 'DESC')
+            ->orderBy('id', 'desc')
             ->get();
 
         $medicines = Medicine::get();
@@ -140,121 +140,5 @@ class TicketDetailsController extends Controller
         $ticket = Appoinment::with('patient', 'doctor', 'medicines', 'labTests', 'clinicNotes', 'instructions')->find($id);
 
         return view('admin.ticketDetail', ['appointment' => $ticket]);
-    }
-    public function exportTickets(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'from_date' => 'nullable|date|before_or_equal:to_date',
-            'to_date' => 'nullable|date|after_or_equal:from_date',
-            'type' => 'nullable|string',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->with('errors', $validator->errors());
-        }
-        $tickets = Ticket::query();
-        if ($request->from_date) {
-            $from_date = date('Y-m-d 00:00:00', strtotime($request->from_date));
-            $to_date = date('Y-m-d 23:59:59', strtotime($request->to_date));
-            $tickets = $tickets->whereBetween('created_at', [$from_date, $to_date]);
-        }
-        if ($request->type) {
-            $tickets = $tickets->where('type', $request->type);
-        }
-        $tickets = $tickets->get();
-        $ticketDetails = [];
-        $ticketDetails[] = ["Series Number", "Ticket No", "First Name", "Last Name", "Email", "Phone Number", "Address", "Type", "Dietary Requirements", "No. of Child", "Discount", "Amount", "Transaction ID", "Card Type", "Card Number", "Booking Date", "Status"];
-        foreach ($tickets as $index => $ticket) {
-            $ticketDetails[] = [
-                $index + 1,
-                $ticket->serial_number ?? $ticket->id,
-                $ticket->first_name,
-                $ticket->last_name,
-                $ticket->email,
-                $ticket->phone,
-                $ticket->address,
-                $ticket->type,
-                $ticket->dietary_requiements,
-                $ticket->ticket_details->count(),
-                $ticket->discount,
-                $ticket->total_amount,
-                $ticket->transaction_id,
-                $ticket->card_brand,
-                'XXXXXXXXXXXX' . $ticket->last4,
-                $ticket->created_at,
-                $ticket->status,
-            ];
-        }
-        $fileName = 'clover-united-soccerthon' . date('d-m-Y') . '.csv';
-        $headers = array(
-            "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-        );
-        return response()->stream(function () use ($ticketDetails) {
-            $file = fopen('php://output', 'w');
-            foreach ($ticketDetails as $line) {
-                fputcsv($file, $line);
-            }
-            fclose($file);
-        }, 200, $headers);
-    }
-    public function pdfTickets($id)
-    {
-        $ticket = Ticket::with('ticket_details', 'installments')->find($id);
-        // $ticketNumbers = [];
-        // foreach ($tickets->ticket_details as $ticketNumber) {
-        //     array_push($ticketNumbers, $ticketNumber->ticket_number);
-        // }
-        // $ticketNumbers = implode(',', $ticketNumbers);
-        // $data["title"] = "Naomh Columba Draw | Ticket Number :" . $ticketNumbers;
-        $data["ticketData"] = $ticket;
-        // $data["ticketNumbers"] = $ticketNumbers;
-        $data['ticket'] = $ticket;
-        $pdf = PDF::loadView('pdfmail', $data);
-        return $pdf->download('tickets.pdf');
-    }
-    public function export()
-    {
-        return view('admin.export');
-    }
-
-    public function resendEmail(Request $request)
-    {
-        $request->validate([
-            'ticketId' => 'required|exists:tickets,id',
-        ]);
-        $ticket = Ticket::findOrFail($request->ticketId);
-
-        try {
-
-            $receipt = $request->ticketType;
-            if ($receipt == 'dinnerDanceReceipt') {
-                $ticket_numbers = implode(',', Ticket::where('transaction_id', $ticket->transaction_id)->pluck('serial_number')->toArray());
-                $ticket->total_amount = Ticket::where('transaction_id', $ticket->transaction_id)->sum('total_amount');
-                $ticket->serial_number = $ticket_numbers;
-                $subject = 'Dinner Dance Receipt';
-            }
-            if (App::environment(['staging', 'local'])) {
-                FacadesNotification::route('mail', 'atasam.imtiaz@moebotech.com')->notify(new ReceiptNotification($ticket, Null, Null, $receipt));
-                FacadesNotification::route('mail', $ticket->email)->notify(new ReceiptNotification($ticket, Null, $subject ?? 'Registration Receipt', $receipt));
-            } elseif (App::environment('production')) {
-                FacadesNotification::route('mail', 'hello@cloverunited.ie')->notify(new ReceiptNotification($ticket, Null, Null, $receipt));
-                FacadesNotification::route('mail', 'saqib.umair@moebotech.com')->notify(new ReceiptNotification($ticket, Null, Null, $receipt));
-                FacadesNotification::route('mail', 'ronanweldon@gmail.com')->notify(new ReceiptNotification($ticket, Null, Null, $receipt));
-                FacadesNotification::route('mail', 'Mauricemch@gmail.com')->notify(new ReceiptNotification($ticket, Null, Null, $receipt));
-                FacadesNotification::route('mail', $ticket->email)->notify(new ReceiptNotification($ticket, Null, $subject ?? 'Registration Receipt', $receipt));
-            }
-            // FacadesNotification::route('mail', 'atasam.imtiaz@moebotech.com')->notify(new ReceiptNotification($ticket, $receipt));
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Email has been successfully resent'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to resend email. Please try again later.'
-            ], 500);
-        }
     }
 }

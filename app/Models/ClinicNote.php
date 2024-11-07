@@ -15,7 +15,6 @@ class ClinicNote extends Model
     protected $fillable = [
         'appointment_id',
         'dm',
-        'ht',
         'bp',
         'pc',
     ];

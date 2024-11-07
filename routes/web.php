@@ -74,8 +74,9 @@ Route::middleware('auth')->group(function () {
 
 
     Route::post('/appointments/add-details', [App\Http\Controllers\AppoinmentController::class, 'store'])->name('items.store');
+    Route::post('/add-discount', [App\Http\Controllers\AppoinmentController::class, 'addDiscount'])->name('addDiscount');
 
-    
+
 
 
 

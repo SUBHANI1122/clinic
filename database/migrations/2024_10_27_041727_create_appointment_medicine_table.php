@@ -18,7 +18,7 @@ class CreateAppointmentMedicineTable extends Migration
             $table->foreignId('appointment_id')->nullable()->constrained('appoinments')->onDelete('cascade');
             $table->foreignId('medicine_id')->nullable()->constrained('medicines')->onDelete('cascade');
             $table->integer('days')->nullable(); // Add this line
-            $table->string('meal_timing')->default('before');
+            $table->string('meal_timing')->nullable();
             $table->boolean('morning')->default(false);
             $table->boolean('afternoon')->default(false);
             $table->boolean('evening')->default(false);

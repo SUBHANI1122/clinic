@@ -15,12 +15,11 @@ class CreateClinicNotesTable extends Migration
     {
         Schema::create('clinic_notes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('appointment_id')->nullable()->constrained('appoinments')->onDelete('cascade'); // Foreign key to appointments table
-            $table->boolean('dm')->default(false); 
-            $table->boolean('ht')->default(false); 
+            $table->foreignId('appointment_id')->nullable()->constrained('appoinments')->onDelete('cascade');
+            $table->boolean('dm')->nullable()->default(false); 
             $table->string('bp')->nullable(); 
             $table->string('pc')->nullable();
-            $table->string('diagnosis')->nullable(); 
+            $table->longText('diagnosis')->nullable(); 
             $table->string('temperature')->nullable();
             $table->timestamps();
         });

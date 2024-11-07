@@ -213,7 +213,7 @@
                                 <div class="form-group">
                                     <label for="address" class="text-color mb-1 ps-1">Doctor Fee:</label>
                                     <input type="number" class="form-control" id="amount" name="amount"
-                                        placeholder="Enter Doctor Fee">
+                                        placeholder="Enter Doctor Fee" value="0">
                                 </div>
                             </div>
                         </div>

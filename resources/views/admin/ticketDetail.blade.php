@@ -244,8 +244,6 @@
                                     کھانے سے پہلے
                                     @elseif($medicine->pivot->meal_timing == 'after')
                                     کھانے کے بعد
-                                    @else
-                                    N/A
                                     @endif
                                     <br>
                                     @if($medicine->pivot->morning) صبح / @endif
