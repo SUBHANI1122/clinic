@@ -330,7 +330,9 @@
             $('#appointment_id').val($(this).data('id'));
             var doctor = $(this).data('doctor');
             if (doctor === 'Dr Ayesha Afraz') {
-                $('.therapy').css('display', 'none'); // Corrected the selector and method
+                $('.therapy').css('display', 'none');
+            }else{
+                $('.therapy').css('display', 'block'); 
             }
         });
 
