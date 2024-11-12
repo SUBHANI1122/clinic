@@ -16,7 +16,7 @@
             }
 
             .invoice-container {
-                width: 80%;
+                width: 50%;
                 margin: 20px auto;
                 padding: 20px;
                 border: 1px solid #ccc;
@@ -59,31 +59,24 @@
 <body>
     <div class="invoice-container">
         <div class="header">
-            <img src="{{ url('images/logo.png') }}" alt="Clinic Logo">
+            <!-- <img src="{{ url('images/logo.png') }}" alt="Clinic Logo"> -->
             @if($invoiceData['doctor_name'] === 'Dr Ayesha Afraz')
             <h2>Skin Aesthetic Clinic</h2>
             @else
             <h2>Medical Care & Physiotherapy Clinic</h2>
             @endif
-
-            <p>B.Block, fountain Chowk, B.Block Plaza No.42.B, near Fountain Chowk, <br>
-                near Bank Al Falah, Citi Housing Society, <br> Sialkot</p>
-            <p>Phone: 0332 4276305</p>
+            <p>Citi Housing B.Block Fountain Chowk Near Sadiq Mart.03324276305</p>
         </div>
-
         <h3 style="text-align: center;">Invoice # {{$invoiceData['appoinment_id']}}</h3>
 
-        <div class="invoice-details">
+        <div class="invoice-details" style="align-items: center;">
             <p><strong>Patient Name:</strong> {{ $invoiceData['patient_name'] }}</p>
             <p><strong>Doctor Name:</strong> {{ $invoiceData['doctor_name'] }}</p>
-            <p><strong>Department Name:</strong> {{ $invoiceData['department'] }}</p>
-            <p><strong>Procedure Name:</strong> {{ $invoiceData['procedure_name'] }}</p>
-            <p><strong>Appointment Date:</strong> {{ $invoiceData['appointment_date'] }}</p>
+            @if(!empty($invoiceData['procedure_name']))
+            <p><strong>Procedure Nameaaaa:</strong> {{ $invoiceData['procedure_name'] }}</p>
+            @endif
+            <p><strong>Date:</strong> {{ $invoiceData['appointment_date'] }}</p>
             <p><strong>Total Amount:</strong> {{ $invoiceData['total_amount'] }}</p>
-        </div>
-
-        <div class="footer">
-            <p>Thank you for trusting us with your healthcare needs.</p>
         </div>
     </div>
 

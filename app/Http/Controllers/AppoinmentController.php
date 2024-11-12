@@ -54,6 +54,7 @@ class AppoinmentController extends Controller
 
         $validatedData['dm'] = $request->has('dm');
         $validatedData['ht'] = $request->has('ht');
+        $validatedData['next_date'] = $request->input('next_date');
 
 
         $appointment = Appoinment::findOrFail($validatedData['appointment_id']);
@@ -67,6 +68,7 @@ class AppoinmentController extends Controller
             'pc' => $validatedData['pc'],
             'diagnosis' => $validatedData['diagnosis'],
             'temperature' => $validatedData['temperature'],
+            'next_date' =>  $validatedData['next_date']
         ]);
         $clinicNote->save();
 

@@ -113,16 +113,18 @@ class TicketController extends Controller
             return redirect()->back()->with('errors', $validator->errors());
         }
 
-        $patient = User::firstOrCreate(
-            ['phone' => $request->phone],
-            [
+        $patient = User::where('phone', $request->phone)
+            ->where('name', 'like', '%' . $request->name . '%')
+            ->first();
+        if (!$patient) {
+            $patient = User::create([
                 'name' => $request->name,
                 'address' => $request->address,
                 'phone' => $request->phone,
                 'type' => 'patient',
-                'age' => $request->age
-            ]
-        );
+                'age' => $request->age,
+            ]);
+        }
         $procedure_amount = $request->procedure_amount ?? 0;
 
         $total_amount =  $procedure_amount + $request->amount;
@@ -149,7 +151,7 @@ class TicketController extends Controller
             'total_amount' => $total_amount,
             'amount' => $request->amount,
             'procedure_amount' =>  $procedure_amount,
-            'procedure_name' => $request->procedure_name ?? 'N/A',
+            'procedure_name' => $request->procedure_name,
             'age' => $request->age,
             'department' => $request->department_id,
         ];

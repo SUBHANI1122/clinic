@@ -21,8 +21,11 @@ class MedicineController extends Controller
 
     public function store(Request $request)
     {
-        Medicine::create($request->all());
-        return response()->json(['success' => true]);
+        $medicine = Medicine::create($request->all());
+        return response()->json([
+            'success' => true,
+            'medicine' => $medicine
+        ]);
     }
 
     public function update(Request $request, $id)

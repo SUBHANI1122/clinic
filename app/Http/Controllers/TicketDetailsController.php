@@ -110,6 +110,16 @@ class TicketDetailsController extends Controller
         return view('admin.entries', ['tickets' => $tickets, 'medicines' => $medicines, 'lab_tests' => $labs, 'instructions' => $instructions]);
     }
 
+    public function addPreception($id)
+    {
+        $ticket = Appoinment::with('patient', 'doctor', 'medicines', 'labTests', 'clinicNotes', 'instructions')->find($id);
+        $medicines = Medicine::get();
+        $instructions = Instructions::get();
+        $labs = Lab::get();
+
+        return view('admin.add-preception', ['ticket' => $ticket, 'medicines' => $medicines, 'lab_tests' => $labs, 'instructions' => $instructions]);
+    }
+
     public function todayAppoinments()
     {
         // Get today's date
@@ -119,7 +129,7 @@ class TicketDetailsController extends Controller
             ->when(Auth::user()->type !== 'admin', function ($query) {
                 $query->where('doctor_id', Auth::user()->id);
             })
-            ->whereDate('appointment_date', $today) 
+            ->whereDate('appointment_date', $today)
             ->orderBy('id', 'desc')
             ->get();
 
@@ -128,7 +138,7 @@ class TicketDetailsController extends Controller
         $labs = Lab::get();
 
         return view('admin.entries', [
-            'tickets' => $appointments, 
+            'tickets' => $appointments,
             'medicines' => $medicines,
             'lab_tests' => $labs,
             'instructions' => $instructions
@@ -138,7 +148,6 @@ class TicketDetailsController extends Controller
     public function ticketDetail($id)
     {
         $ticket = Appoinment::with('patient', 'doctor', 'medicines', 'labTests', 'clinicNotes', 'instructions')->find($id);
-
         return view('admin.ticketDetail', ['appointment' => $ticket]);
     }
 }

@@ -163,8 +163,11 @@
     <div class="container">
 
         <div class="header">
+            @if($appointment->doctor->name === 'Dr Ayesha Afraz')
+            <h1>Skin Aesthetic Clinic</h1>
+            @else
             <h1>Medical Care & Physiotherapy Clinic</h1>
-            <div class="sub-header"><u>Not Valid For Court</u></div>
+            @endif <div class="sub-header"><u>Not Valid For Court</u></div>
         </div>
 
         <div class="doctor-info-section">
@@ -199,12 +202,19 @@
             <div class="column col-4">
                 <div class="clinic-notes">
                     <h3>Clinic Notes</h3>
-                    @if ($appointment->clinicNotes)
+                    @if ($appointment->clinicNotes )
+                    @if($appointment->doctor->name === 'Dr Ayesha Afraz')
+                    <p><strong>Presenting Complaint:</strong> {{ $appointment->clinicNotes->pc }}</p>
+                    <p><strong>Diagnose:</strong> {{ $appointment->clinicNotes->diagnosis }}</p>
+                    <p><strong>Procedure Name:</strong> {{ $appointment->procedure_name }}</p>
+                    <p><strong>Next Procedure Date::</strong> {{ $appointment->clinicNotes->next_date }}</p>
+                    @else
                     <p><strong>Diabetes Mellitus:</strong> {{ $appointment->clinicNotes->dm ? 'Yes' : 'No' }}</p>
                     <p><strong>BP:</strong> {{ $appointment->clinicNotes->bp }}</p>
                     <p><strong>Presenting Complaint:</strong> {{ $appointment->clinicNotes->pc }}</p>
                     <p><strong>Diagnose:</strong> {{ $appointment->clinicNotes->diagnosis }}</p>
                     <p><strong>Temperature:</strong> {{ $appointment->clinicNotes->temperature }}</p>
+                    @endif
                     @else
                     <p>No clinic notes available for this appointment.</p>
                     @endif

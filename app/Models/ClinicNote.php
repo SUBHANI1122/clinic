@@ -18,7 +18,8 @@ class ClinicNote extends Model
         'bp',
         'pc',
         'diagnosis',
-        'temperature'
+        'temperature',
+        'next_date'
 
     ];
 
