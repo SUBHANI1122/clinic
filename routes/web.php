@@ -43,6 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     Route::get('/registrations', [App\Http\Controllers\TicketDetailsController::class, 'ticketEntries'])->name('bookings');
     Route::get('/today/appoinments', [App\Http\Controllers\TicketDetailsController::class, 'todayAppoinments'])->name('bookings.today');
+    Route::get('add/appoinments/preception/{id}', [App\Http\Controllers\TicketDetailsController::class, 'addPreception'])->name('add.preception');
+
 
     Route::get('/ticketDetail/{id}', [App\Http\Controllers\TicketDetailsController::class, 'ticketDetail'])->name('ticketDetail');
     Route::get('exportTickets', [App\Http\Controllers\TicketDetailsController::class, 'exportTickets'])->name('exportTickets');
