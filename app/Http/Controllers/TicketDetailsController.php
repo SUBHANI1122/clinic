@@ -150,4 +150,13 @@ class TicketDetailsController extends Controller
         $ticket = Appoinment::with('patient', 'doctor', 'medicines', 'labTests', 'clinicNotes', 'instructions')->find($id);
         return view('admin.ticketDetail', ['appointment' => $ticket]);
     }
+    public function patientHeistory($patientId)
+    {
+        $appointments = Appoinment::with('doctor', 'medicines', 'labTests', 'clinicNotes', 'instructions')
+            ->where('patient_id', $patientId)
+            ->orderBy('appointment_date', 'desc')
+            ->get();
+
+        return view('admin.patient_heistory', ['appointments' => $appointments]);
+    }
 }

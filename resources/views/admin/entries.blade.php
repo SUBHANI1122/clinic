@@ -46,7 +46,7 @@
                         <td>{{ $ticket->total_amount }}</td>
                         <td>{{ $ticket->discount }}</td>
                         <td>
-                            <a href="{{ route('ticketDetail', ['id' => $ticket->id]) }}"
+                            <a href="{{ route('patientHeistory', ['id' => $ticket->patient->id]) }}"
                                 class="text-decoration-none text-success" style="font-size:14px">View Details</a>
                             @if (Auth::user()->type == 'doctor')
                             <a href="{{ route('add.preception', ['id' => $ticket->id]) }}" class="btn btn-primary btn-sm">

@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/ticketDetail/{id}', [App\Http\Controllers\TicketDetailsController::class, 'ticketDetail'])->name('ticketDetail');
+    Route::get('/patientHeistory/{id}', [App\Http\Controllers\TicketDetailsController::class, 'patientHeistory'])->name('patientHeistory');
     Route::get('exportTickets', [App\Http\Controllers\TicketDetailsController::class, 'exportTickets'])->name('exportTickets');
     Route::get('pdfTickets/{id}', [App\Http\Controllers\TicketDetailsController::class, 'pdfTickets'])->name('pdfTickets');
     Route::get('export', [App\Http\Controllers\TicketDetailsController::class, 'export'])->name('export');
