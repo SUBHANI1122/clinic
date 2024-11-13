@@ -19,6 +19,11 @@ class Appoinment extends Model
         'appointment_date'
     ];
 
+    protected $dates = ['appointment_date'];
+    protected $casts = [
+        'appointment_date' => 'datetime',
+    ];
+
     // Relationships
     public function patient()
     {
