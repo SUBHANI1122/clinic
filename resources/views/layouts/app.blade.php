@@ -206,7 +206,6 @@
 </script>
 <script type="text/Javascript">
     $(document).ready(function(){
-        $(document).ready(function() {
     $('#entries-table').DataTable({
         dom: 'Bfrtip',
         buttons: [
@@ -225,12 +224,8 @@
                 orderable: false 
             }
         ],
-        order: [[5, 'desc']] 
+        order: [[7, 'desc']] 
     });
-});
-
-
-
     })
 </script>
 
