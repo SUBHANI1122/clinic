@@ -163,7 +163,7 @@
     <div class="container">
 
         <div class="header">
-            @if($appointment->doctor->name === 'Dr Ayesha Afraz')
+            @if($appointment->department === 'skin')
             <h1>Skin Aesthetic Clinic</h1>
             @else
             <h1>Medical Care & Physiotherapy Clinic</h1>

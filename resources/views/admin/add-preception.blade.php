@@ -173,9 +173,9 @@
     <script>
         $(document).ready(function() {
 
-            var doctorName = '{{ $ticket->doctor->name }}';
+            var doctorName = '{{ $ticket->department }}';
 
-            if (doctorName === 'Dr Ayesha Afraz') {
+            if (doctorName === 'skin') {
                 $('.skin').show();
                 $('.therapy').hide();
             } else {
@@ -232,8 +232,8 @@
                 const medicineId = $(this).data('id');
                 const medicineText = $(this).text();
                 addMedicineToTable(medicineId, medicineText);
-                $medicineInput.val('').blur(); 
-                $medicineSuggestions.hide(); 
+                $medicineInput.val('').blur();
+                $medicineSuggestions.hide();
             });
             $medicineForm.on('submit', function(e) {
                 e.preventDefault();
@@ -348,13 +348,13 @@
                 <td>
                     <input type="number" class="form-control medicine-days" placeholder="Days" min="1" name="medicine_days[]">
                 </td>
-                <td>
-                    <select class="form-select" name="meal_timing[]">
-                        <option value="" disabled selected>- Select Meal Timing -</option>
-                        <option value="before">Before Meal</option>
-                        <option value="after">After Meal</option>
-                    </select>
-                </td>
+               <td>
+        <select class="form-select" name="meal_timing[${medicineId}]">
+            <option value="" selected>- Select Meal Timing -</option>
+            <option value="before">Before Meal</option>
+            <option value="after">After Meal</option>
+        </select>
+    </td>
                 <td>
                     <div>
                         <input type="checkbox" id="morning_${medicineId}" name="time_slots[${medicineId}][]" value="morning" class="form-check-input">
