@@ -87,7 +87,13 @@
                             id="menu">
 
                             @if(Auth::user()->type == 'admin')
-
+                            <li class="nav-item">
+                                <a href="{{ route('dashboard') }}" class="nav-link align-middle px-0 py-0">
+                                    <i class="fs-4 bi-house"></i> <span class="ms-1 text-success"><i
+                                            class="fa fa-home"></i>
+                                        &nbsp;Dashboard</span>
+                                </a>
+                            </li>
 
                             <li>
                                 <a href="{{ route('bookings') }}" class="nav-link px-0 align-middle py-0">

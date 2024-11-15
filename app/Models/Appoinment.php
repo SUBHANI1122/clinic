@@ -16,7 +16,8 @@ class Appoinment extends Model
         'procedure_name',
         'amount',
         'total_amount',
-        'appointment_date'
+        'appointment_date',
+        'department'
     ];
 
     protected $dates = ['appointment_date'];

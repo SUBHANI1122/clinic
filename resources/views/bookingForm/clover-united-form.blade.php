@@ -179,8 +179,8 @@
                                     <label for="department" class="text-color">Select Department:<span class="text-danger">*</span></label>
                                     <select name="department_id" class="form-control" id="department_id" required>
                                         <option value="" selected disabled>Please Select A Department</option>
-                                        <option value="Medical Care and Physiotherapy">Medical Care and Physiotherapy Clinic</option>
-                                        <option value="skin Aesthetic">Skin Aesthetic Clinic</option>
+                                        <option value="physiotherapy">Medical Care and Physiotherapy Clinic</option>
+                                        <option value="skin">Skin Aesthetic Clinic</option>
                                     </select>
                                 </div>
                             </div>

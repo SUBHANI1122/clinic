@@ -61,14 +61,46 @@
         </div>
     </div>
 </div>
+<div class="col-12 col-md-4 col-lg-4 mb-3">
+    <div class="card bg-light h-100">
+        <div class="card-body px-2 py-2">
+            <div class="row">
+                <div class="col-8 col-md-8 col-lg-8">
+                    <h5 class="text-success">Today Appointments</h5>
+                    <h5>{{ $total_orders_today }}</h5>
+                </div>
+                <div class="col-4 col-md-4 col-lg-4 text-end pt-2">
+                    <i class="fa fa-ticket fa-2x text-success" aria-hidden="true"></i>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @if (Auth::user()->type == 'admin')
 <div class="col-12 col-md-4 col-lg-4 mb-3">
     <div class="card bg-light h-100">
         <div class="card-body px-2 py-2">
             <div class="row">
                 <div class="col-8 col-md-8 col-lg-8">
-                    <h5 class="text-success">Total Amount</h5>
-                    <h5> € {{ number_format($total_amount) }}</h5>
+                    <h5 class="text-success">Total Income</h5>
+                    <h5>  {{ number_format($total_amount) }}</h5>
+                </div>
+                <div class="col-4 col-md-4 col-lg-4 text-end pt-2">
+                    <i class="fa-regular fa-money-bill-1 fa-2x text-success" aria-hidden="true"></i>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-12 col-md-4 col-lg-4 mb-3">
+    <div class="card bg-light h-100">
+        <div class="card-body px-2 py-2">
+            <div class="row">
+                <div class="col-8 col-md-8 col-lg-8">
+                    <h5 class="text-success">Today Income</h5>
+                    <h5>  {{ number_format($total_amount_today) }}</h5>
                 </div>
                 <div class="col-4 col-md-4 col-lg-4 text-end pt-2">
                     <i class="fa-regular fa-money-bill-1 fa-2x text-success" aria-hidden="true"></i>

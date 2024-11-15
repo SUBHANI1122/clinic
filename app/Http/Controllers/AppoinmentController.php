@@ -76,12 +76,11 @@ class AppoinmentController extends Controller
 
         if ($request->filled('medicines')) {
             $medicines = json_decode($validatedData['medicines'], true);
-
             foreach ($medicines as $index => $medicine) {
                 $medicineId = $medicine['id'];
                 $days = isset($medicine['days']) ? $medicine['days'] : null;
 
-                $mealTiming = $request->meal_timing[$index] ?? null;
+                $mealTiming = $request->meal_timing[$medicineId] ?? null;
 
                 $morning = isset($request->time_slots[$medicineId]) && in_array('morning', $request->time_slots[$medicineId]);
                 $afternoon = isset($request->time_slots[$medicineId]) && in_array('afternoon', $request->time_slots[$medicineId]);
