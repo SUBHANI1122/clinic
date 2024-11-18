@@ -22,37 +22,33 @@
                 <hr>
 
                 <input type="hidden" name="appointment_id" id="appointment_id" value="{{$ticket->id}}">
+                <div class="row">
+                    <!-- Presenting Complaint Section -->
+                    <div class="mb-4 col-md-6">
+                        <label for="pc" class="col-form-label">P/C</label>
+                        <input type="text" name="pc" id="pc" class="form-control" placeholder="Presenting Complaint">
+                    </div>
+                    <div class="mb-4 col-md-6">
+                    <label class="col-form-label">Diagnosis</label>
+                        <input type="text" name="diagnosis" class="form-control" placeholder="e.g Diagnosis">
+                    </div>
+                </div>
                 <div class="skin">
                     <div class="row">
-                        <!-- Presenting Complaint Section -->
-                        <div class="mb-4 col-md-6">
-                            <label for="pc" class="col-form-label">P/C</label>
-                            <input type="text" name="pc" id="pc" class="form-control" placeholder="Presenting Complaint">
-                        </div>
+
 
                         <!-- Procedure Name Section -->
                         <div class="mb-4 col-md-6">
                             <label class="col-form-label">Procedure Name:</label>
                             <p>{{ $ticket->procedure_name }}</p>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <!-- Next Procedure Date Section -->
                         <div class="mb-4 col-md-6">
                             <label for="next_date" class="col-form-label">Next Procedure Date:</label>
                             <input type="date" name="next_date" id="next_date" class="form-control" placeholder="Next Procedure Date">
                         </div>
-
-                        <!-- Diagnosis Section -->
-                        <div class="mb-4 col-md-6">
-                            <label for="diagnosis" class="col-form-label">Diagnosis</label>
-                            <input type="text" name="diagnosis" id="diagnosis" class="form-control" placeholder="e.g Diagnosis">
-                        </div>
                     </div>
                 </div>
-
-
                 <div class="therapy">
                     <div class="mb-4 row">
                         <label class="col-md-2 col-form-label">DM</label>
@@ -66,16 +62,8 @@
                         <div class="col-md-5">
                             <input type="text" name="bp" class="form-control" placeholder="e.g., 130/90">
                         </div>
-                        <label class="col-md-1 col-form-label">P/C</label>
-                        <div class="col-md-5">
-                            <input type="text" name="pc" class="form-control" placeholder="Presenting Complaint">
-                        </div>
                     </div>
                     <div class="mb-4 row">
-                        <label class="col-md-1 col-form-label">Diagnosis</label>
-                        <div class="col-md-5">
-                            <input type="text" name="diagnosis" class="form-control" placeholder="e.g Diagnosis">
-                        </div>
                         <label class="col-md-1 col-form-label">Temp.</label>
                         <div class="col-md-5">
                             <input type="text" name="temperature" class="form-control" placeholder="Presenting Temperature">

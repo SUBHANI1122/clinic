@@ -233,7 +233,7 @@
     $(document).ready(function() {
 
         $('#department_id').on('change', function() {
-            if ($(this).val() === 'skin Aesthetic') {
+            if ($(this).val() === 'skin') {
                 $('.procedure').show(); // Show procedure fields
             } else {
                 $('.procedure').hide(); // Hide procedure fields
