@@ -131,6 +131,7 @@ class AppoinmentController extends Controller
 
         $ticket = Appoinment::findOrFail($request->ticket_id);
         $ticket->discount = $request->discount_amount;
+        $ticket->total_amount = $ticket->total_amount - $request->discount_amount;
         $ticket->save();
         return response()->json(['success' => true]);
     }

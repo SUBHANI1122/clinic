@@ -9,6 +9,15 @@
                     <h5 class="mb-0">{{ __('Appointment History') }}</h5>
                 </div>
                 <div class="card-body p-3">
+                    @if($appointments->isNotEmpty())
+                    <div class="patient-info mb-4">
+                        <h6 class="mb-1"><strong>Patient Name:</strong> {{ $appointments->first()->patient->name ?? 'N/A' }}</h6>
+                        <p class="mb-0">
+                            <strong>Age:</strong> {{ $appointments->first()->patient->age ?? 'N/A' }}
+                            <strong>Phone:</strong> {{ $appointments->first()->patient->phone ?? 'N/A' }}
+                        </p>
+                    </div>
+                    @endif
                     @if($appointments->isEmpty())
                     <p class="text-muted">No appointment history available for this patient.</p>
                     @else

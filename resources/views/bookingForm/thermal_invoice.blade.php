@@ -73,7 +73,7 @@
             <p><strong>Patient Name:</strong> {{ $invoiceData['patient_name'] }}</p>
             <p><strong>Doctor Name:</strong> {{ $invoiceData['doctor_name'] }}</p>
             @if(!empty($invoiceData['procedure_name']))
-            <p><strong>Procedure Nameaaaa:</strong> {{ $invoiceData['procedure_name'] }}</p>
+            <p><strong>Procedure Name:</strong> {{ $invoiceData['procedure_name'] }}</p>
             @endif
             <p><strong>Date:</strong> {{ $invoiceData['appointment_date'] }}</p>
             <p><strong>Total Amount:</strong> {{ $invoiceData['total_amount'] }}</p>

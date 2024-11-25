@@ -40,8 +40,8 @@ class HomeController extends Controller
                 $query->where('doctor_id', Auth::user()->id);
             })
             ->count();
-        $total_amount = Appoinment::sum('amount');
-        $total_amount_today = Appoinment::whereDate('appointment_date', Carbon::today())->sum('amount');
+        $total_amount = Appoinment::sum('total_amount');
+        $total_amount_today = Appoinment::whereDate('appointment_date', Carbon::today())->sum('total_amount');
 
         return view('home', ['total_orders' => $total_orders, 'total_orders_today'=>$total_orders_today,'total_amount' => $total_amount, 'total_amount_today' => $total_amount_today]);
     }
