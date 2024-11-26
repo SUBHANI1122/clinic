@@ -23,53 +23,91 @@
 
                 <input type="hidden" name="appointment_id" id="appointment_id" value="{{$ticket->id}}">
                 <div class="row">
-                    <!-- Presenting Complaint Section -->
-                    <div class="mb-4 col-md-6">
-                        <label for="pc" class="col-form-label">P/C</label>
-                        <input type="text" name="pc" id="pc" class="form-control" placeholder="Presenting Complaint">
-                    </div>
-                    <div class="mb-4 col-md-6">
-                    <label class="col-form-label">Diagnosis</label>
-                        <input type="text" name="diagnosis" class="form-control" placeholder="e.g Diagnosis">
-                    </div>
+                <!-- Presenting Complaint Section -->
+                <div class="col-md-4 mb-4">
+                    <label for="pc" class="col-form-label">P/C</label>
+                    <input 
+                        type="text" 
+                        name="pc" 
+                        id="pc" 
+                        class="form-control" 
+                        placeholder="Presenting Complaint">
                 </div>
-                <div class="skin">
-                    <div class="row">
+                <div class="col-md-4 mb-4">
+                    <label for="diagnosis" class="col-form-label">Diagnosis</label>
+                    <input 
+                        type="text" 
+                        name="diagnosis" 
+                        id="diagnosis" 
+                        class="form-control" 
+                        placeholder="e.g., Diagnosis">
+                </div>
+            </div>
+            
+          <div class="row mb-4">
+            <!-- Diabetes Mellitus Section -->
+            <div class="col-md-4">
+                <label for="dm" class="col-form-label">DM</label>
+                <div class="form-check">
+                    <input 
+                        type="checkbox" 
+                        name="dm" 
+                        id="dm" 
+                        class="form-check-input">
+                    <label for="dm" class="form-check-label">Diabetes Mellitus</label>
+                </div>
+            </div>
+        
+            <!-- Blood Pressure Section -->
+            <div class="col-md-4">
+                <label for="bp" class="col-form-label">B.P</label>
+                <input 
+                    type="text" 
+                    name="bp" 
+                    id="bp" 
+                    class="form-control" 
+                    placeholder="e.g., 130/90">
+            </div>
+        
+            <!-- Temperature Section -->
+            <div class="col-md-4">
+                <label for="temperature" class="col-form-label">Temp.</label>
+                <input 
+                    type="text" 
+                    name="temperature" 
+                    id="temperature" 
+                    class="form-control" 
+                    placeholder="Presenting Temperature">
+            </div>
+        </div>
 
-
-                        <!-- Procedure Name Section -->
-                        <div class="mb-4 col-md-6">
-                            <label class="col-form-label">Procedure Name:</label>
-                            <p>{{ $ticket->procedure_name }}</p>
-                        </div>
-                        <!-- Next Procedure Date Section -->
-                        <div class="mb-4 col-md-6">
-                            <label for="next_date" class="col-form-label">Next Procedure Date:</label>
-                            <input type="date" name="next_date" id="next_date" class="form-control" placeholder="Next Procedure Date">
-                        </div>
-                    </div>
+            
+            @if ($ticket->department == 'skin')
+            <div class="row">
+                <!-- Procedure Name Section -->
+                <div class="col-md-6 mb-4">
+                    <label for="procedure_name" class="col-form-label">Procedure Name:</label>
+                    <input 
+                        type="text" 
+                        name="procedure_name" 
+                        id="procedure_name" 
+                        class="form-control" 
+                        placeholder="Procedure Name" 
+                        value="{{ $ticket->procedure_name }}">
                 </div>
-                <div class="therapy">
-                    <div class="mb-4 row">
-                        <label class="col-md-2 col-form-label">DM</label>
-                        <div class="col-md-4">
-                            <input type="checkbox" name="dm" id="dm" class="form-check-input me-2">
-                            <label for="dm" class="form-check-label">Diabetes Mellitus</label>
-                        </div>
-                    </div>
-                    <div class="mb-4 row">
-                        <label class="col-md-1 col-form-label">B.P</label>
-                        <div class="col-md-5">
-                            <input type="text" name="bp" class="form-control" placeholder="e.g., 130/90">
-                        </div>
-                    </div>
-                    <div class="mb-4 row">
-                        <label class="col-md-1 col-form-label">Temp.</label>
-                        <div class="col-md-5">
-                            <input type="text" name="temperature" class="form-control" placeholder="Presenting Temperature">
-                        </div>
-                    </div>
+            
+                <!-- Next Procedure Date Section -->
+                <div class="col-md-6 mb-4">
+                    <label for="next_date" class="col-form-label">Next Procedure</label>
+                    <input 
+                        type="text" 
+                        name="next_date" 
+                        id="next_date" 
+                        class="form-control" 
+                        placeholder="Next Procedure">
                 </div>
+            </div>
+            @endif
                 <h6 class="text-primary mt-4">Medicines</h6>
                 <hr>
                 <div class="mb-4">
@@ -160,16 +198,6 @@
 
     <script>
         $(document).ready(function() {
-
-            var doctorName = '{{ $ticket->department }}';
-
-            if (doctorName === 'skin') {
-                $('.skin').show();
-                $('.therapy').hide();
-            } else {
-                $('.skin').hide();
-                $('.therapy').show();
-            }
 
             const $medicineInput = $('#medicineInput');
             const $medicineSuggestions = $('#medicineSuggestions');

@@ -207,7 +207,7 @@
                     <p><strong>Presenting Complaint:</strong> {{ $appointment->clinicNotes->pc }}</p>
                     <p><strong>Diagnose:</strong> {{ $appointment->clinicNotes->diagnosis }}</p>
                     <p><strong>Procedure Name:</strong> {{ $appointment->procedure_name }}</p>
-                    <p><strong>Next Procedure Date::</strong>{{ \Carbon\Carbon::parse($appointment->clinicNotes->next_date)->translatedFormat('l, jS F Y') }}</p>
+                    <p><strong>Next Procedure::</strong>{{ $appointment->clinicNotes->next_date }}</p>
                     @else
                     <p><strong>Diabetes Mellitus:</strong> {{ $appointment->clinicNotes->dm ? 'Yes' : 'No' }}</p>
                     <p><strong>BP:</strong> {{ $appointment->clinicNotes->bp }}</p>

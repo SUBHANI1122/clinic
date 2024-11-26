@@ -58,6 +58,8 @@ class AppoinmentController extends Controller
 
 
         $appointment = Appoinment::findOrFail($validatedData['appointment_id']);
+        $appointment->procedure_name = $request->procedure_name;
+        $appointment->update();
 
         $clinicNote = ClinicNote::firstOrNew(['appointment_id' => $appointment->id]);
 

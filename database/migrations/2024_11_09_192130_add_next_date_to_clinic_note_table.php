@@ -14,7 +14,7 @@ class AddNextDateToClinicNoteTable extends Migration
     public function up()
     {
         Schema::table('clinic_notes', function (Blueprint $table) {
-            $table->date('next_date')->nullable();
+            $table->string('next_date')->nullable();
 
         });
     }
