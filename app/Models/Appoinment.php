@@ -19,7 +19,7 @@ class Appoinment extends Model
         'appointment_date',
         'department'
     ];
-
+    
     protected $dates = ['appointment_date'];
     protected $casts = [
         'appointment_date' => 'datetime',

@@ -34,10 +34,11 @@ use App\Models\Appoinment;
 use App\Models\User;
 use App\Notifications\InvoiceFailedNotification;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Cache;
 use Stripe\SetupIntent;
 use Stripe\Subscription;
 use Stripe\SubscriptionSchedule;
+use Illuminate\Support\Facades\Cache;
+
 
 
 class TicketController extends Controller
@@ -135,11 +136,12 @@ class TicketController extends Controller
             'patient_id' => $patient->id,
             'doctor_id' => $request->doctor_id,
             'procedure_amount' =>  $procedure_amount,
-            'procedure_name' => $request->procedure_name ?? 'N/A',
+            'procedure_name' => $request->procedure_name,
             'amount' => $request->amount,
             'total_amount' => $total_amount,
             'appointment_date' => now(),
             'department' => $request->department_id
+
         ]);
 
         $doctor = User::findOrFail($request->doctor_id);
@@ -148,7 +150,6 @@ class TicketController extends Controller
 
         $invoiceNumber = Cache::get($cacheKey, 0) + 1;
         Cache::put($cacheKey, $invoiceNumber, Carbon::now()->endOfDay());
-
         // Prepare invoice data
         $invoiceData = [
             'invoice_number' =>$invoiceNumber,

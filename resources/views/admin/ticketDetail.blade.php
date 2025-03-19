@@ -203,11 +203,13 @@
                 <div class="clinic-notes">
                     <h3>Clinic Notes</h3>
                     @if ($appointment->clinicNotes )
-                    @if($appointment->department === 'skin')
+            @if($appointment->department === 'skin')
                     <p><strong>Presenting Complaint:</strong> {{ $appointment->clinicNotes->pc }}</p>
                     <p><strong>Diagnose:</strong> {{ $appointment->clinicNotes->diagnosis }}</p>
                     <p><strong>Procedure Name:</strong> {{ $appointment->procedure_name }}</p>
                     <p><strong>Next Procedure::</strong>{{ $appointment->clinicNotes->next_date }}</p>
+
+
                     @else
                     <p><strong>Diabetes Mellitus:</strong> {{ $appointment->clinicNotes->dm ? 'Yes' : 'No' }}</p>
                     <p><strong>BP:</strong> {{ $appointment->clinicNotes->bp }}</p>
@@ -281,7 +283,7 @@
     <div class="divider"></div>
 
     <div class="footer">
-        <p>B.Block Fountain Chowk Near Sadiq Mart. <strong>Ph:0332 4276305</strong></p>
+        <p>B.Block Fountain Chowk Near Sadiq Mart Citi Housing Sialkot. <strong>Ph:0332 4276305</strong></p>
     </div>
 
     <script>

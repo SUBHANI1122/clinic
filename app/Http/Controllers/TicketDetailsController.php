@@ -100,8 +100,7 @@ class TicketDetailsController extends Controller
         $tickets = Appoinment::with('patient', 'doctor')
             ->when(Auth::user()->type !== 'admin', function ($query) {
                 $query->where('doctor_id', Auth::user()->id);
-            })
-            ->orderBy('id', 'desc')
+            })->orderBy('id', 'desc')
             ->get();
         $medicines = Medicine::get();
         $instructions = Instructions::get();
@@ -132,7 +131,6 @@ class TicketDetailsController extends Controller
             ->whereDate('appointment_date', $today)
             ->orderBy('id', 'desc')
             ->get();
-
         $medicines = Medicine::get();
         $instructions = Instructions::get();
         $labs = Lab::get();
@@ -150,7 +148,7 @@ class TicketDetailsController extends Controller
         $ticket = Appoinment::with('patient', 'doctor', 'medicines', 'labTests', 'clinicNotes', 'instructions')->find($id);
         return view('admin.ticketDetail', ['appointment' => $ticket]);
     }
-    public function patientHeistory($patientId)
+        public function patientHeistory($patientId)
     {
         $appointments = Appoinment::with('doctor', 'medicines', 'labTests', 'clinicNotes', 'instructions')
             ->where('patient_id', $patientId)

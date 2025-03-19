@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Appoinment;
 use App\Models\Ticket;
 use App\Models\TicketDetail;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {

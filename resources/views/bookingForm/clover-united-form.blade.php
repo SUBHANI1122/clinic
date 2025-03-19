@@ -127,7 +127,7 @@
                                 <div class="form-group">
                                     <label for="phone" class="text-color mb-1 ps-1">Age:<span
                                             class="text-danger">*</span></label><br>
-                                    <input type="number" class="form-control" style="width:100%" name="age"
+                                    <input type="text" class="form-control" style="width:100%" name="age"
                                         id="age" placeholder="Enter Age"
                                         value="{{ old('age') }}">
                                     <br>

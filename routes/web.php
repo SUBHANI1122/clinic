@@ -39,15 +39,28 @@ Route::get('/stripe', function (Request $request) {
     return view('stripe', ['paymentIntentId' => $id]);
 })->name('stripe.confirm');
 
+
+Route::get('/optimize-clear', function () {
+    // Clear all caches
+    Artisan::call('optimize:clear');
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Application cache cleared and optimized successfully!'
+    ]);
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     Route::get('/registrations', [App\Http\Controllers\TicketDetailsController::class, 'ticketEntries'])->name('bookings');
     Route::get('/today/appoinments', [App\Http\Controllers\TicketDetailsController::class, 'todayAppoinments'])->name('bookings.today');
-    Route::get('add/appoinments/preception/{id}', [App\Http\Controllers\TicketDetailsController::class, 'addPreception'])->name('add.preception');
+    
+        Route::get('add/appoinments/preception/{id}', [App\Http\Controllers\TicketDetailsController::class, 'addPreception'])->name('add.preception');
 
 
     Route::get('/ticketDetail/{id}', [App\Http\Controllers\TicketDetailsController::class, 'ticketDetail'])->name('ticketDetail');
-    Route::get('/patientHeistory/{id}', [App\Http\Controllers\TicketDetailsController::class, 'patientHeistory'])->name('patientHeistory');
+        Route::get('/patientHeistory/{id}', [App\Http\Controllers\TicketDetailsController::class, 'patientHeistory'])->name('patientHeistory');
+
     Route::get('exportTickets', [App\Http\Controllers\TicketDetailsController::class, 'exportTickets'])->name('exportTickets');
     Route::get('pdfTickets/{id}', [App\Http\Controllers\TicketDetailsController::class, 'pdfTickets'])->name('pdfTickets');
     Route::get('export', [App\Http\Controllers\TicketDetailsController::class, 'export'])->name('export');
@@ -77,9 +90,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::post('/appointments/add-details', [App\Http\Controllers\AppoinmentController::class, 'store'])->name('items.store');
-    Route::post('/add-discount', [App\Http\Controllers\AppoinmentController::class, 'addDiscount'])->name('addDiscount');
-
-
+        Route::post('/add-discount', [App\Http\Controllers\AppoinmentController::class, 'addDiscount'])->name('addDiscount');
 
 
 

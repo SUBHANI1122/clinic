@@ -60,14 +60,15 @@
     <div class="invoice-container">
         <div class="header">
             <!-- <img src="{{ url('images/logo.png') }}" alt="Clinic Logo"> -->
-            @if($invoiceData['department'] === 'skin')
+           @if($invoiceData['department'] === 'skin')
             <h2>Skin Aesthetic Clinic</h2>
             @else
             <h2>Medical Care & Physiotherapy Clinic</h2>
             @endif
             <p>Citi Housing B.Block Fountain Chowk Near Sadiq Mart.03324276305</p>
         </div>
-        <h3 style="text-align: center;">Invoice # {{$invoiceData['invoice_number']}}</h3>
+                <h3 style="text-align: center;">Invoice # {{$invoiceData['invoice_number']}}</h3>
+
 
         <div class="invoice-details" style="align-items: center;">
             <p><strong>Patient Name:</strong> {{ $invoiceData['patient_name'] }}</p>

@@ -22,7 +22,7 @@
                 <hr>
 
                 <input type="hidden" name="appointment_id" id="appointment_id" value="{{$ticket->id}}">
-                <div class="row">
+            <div class="row">
                 <!-- Presenting Complaint Section -->
                 <div class="col-md-4 mb-4">
                     <label for="pc" class="col-form-label">P/C</label>
@@ -108,6 +108,7 @@
                 </div>
             </div>
             @endif
+
                 <h6 class="text-primary mt-4">Medicines</h6>
                 <hr>
                 <div class="mb-4">
@@ -199,6 +200,16 @@
     <script>
         $(document).ready(function() {
 
+            var doctorName = '{{ $ticket->department }}';
+
+            if (doctorName === 'skin') {
+                $('.skin').show();
+                $('.therapy').hide();
+            } else {
+                $('.skin').hide();
+                $('.therapy').show();
+            }
+
             const $medicineInput = $('#medicineInput');
             const $medicineSuggestions = $('#medicineSuggestions');
             const $selectedMedicinesTable = $('#selectedMedicinesTable tbody');
@@ -248,8 +259,8 @@
                 const medicineId = $(this).data('id');
                 const medicineText = $(this).text();
                 addMedicineToTable(medicineId, medicineText);
-                $medicineInput.val('').blur();
-                $medicineSuggestions.hide();
+                $medicineInput.val('').blur(); 
+                $medicineSuggestions.hide(); 
             });
             $medicineForm.on('submit', function(e) {
                 e.preventDefault();
@@ -364,13 +375,13 @@
                 <td>
                     <input type="number" class="form-control medicine-days" placeholder="Days" min="1" name="medicine_days[]">
                 </td>
-               <td>
-        <select class="form-select" name="meal_timing[${medicineId}]">
-            <option value="" selected>- Select Meal Timing -</option>
-            <option value="before">Before Meal</option>
-            <option value="after">After Meal</option>
-        </select>
-    </td>
+                <td>
+                    <select class="form-select" name="meal_timing[${medicineId}]">
+                        <option value="" selected>- Select Meal Timing -</option>
+                        <option value="before">Before Meal</option>
+                        <option value="after">After Meal</option>
+                    </select>
+                </td>
                 <td>
                     <div>
                         <input type="checkbox" id="morning_${medicineId}" name="time_slots[${medicineId}][]" value="morning" class="form-check-input">
