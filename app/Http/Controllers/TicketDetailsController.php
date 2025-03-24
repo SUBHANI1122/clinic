@@ -97,16 +97,42 @@ class TicketDetailsController extends Controller
     }
     public function ticketEntries()
     {
-        $tickets = Appoinment::with('patient', 'doctor')
-            ->when(Auth::user()->type !== 'admin', function ($query) {
-                $query->where('doctor_id', Auth::user()->id);
-            })->orderBy('id', 'desc')
-            ->get();
-        $medicines = Medicine::get();
-        $instructions = Instructions::get();
-        $labs = Lab::get();
+        return view('admin.entries', ['today' => 0]);
+    }
 
-        return view('admin.entries', ['tickets' => $tickets, 'medicines' => $medicines, 'lab_tests' => $labs, 'instructions' => $instructions]);
+    public function fetchTickets(Request $request)
+    {
+        $query = Appoinment::with(['patient:id,name,phone,age,address', 'doctor:id,name'])
+            ->select('id', 'doctor_id', 'patient_id', 'appointment_date', 'total_amount', 'discount')
+            ->when(Auth::user()->type !== 'admin', function ($q) {
+                $q->where('doctor_id', Auth::user()->id);
+            });
+
+        // Check if we are fetching today's appointments
+        if ($request->has('today') && $request->today == 1) {
+            $query->whereDate('appointment_date', now()->toDateString());
+        }
+
+        return datatables()->eloquent($query)
+            ->addIndexColumn()
+            ->editColumn('appointment_date', function ($row) {
+                return \Carbon\Carbon::parse($row->appointment_date)->format('d-m-y');
+            })
+            ->addColumn('actions', function ($row) {
+                $buttons = '<a href="' . route('patientHeistory', ['id' => $row->patient->id]) . '" class="text-decoration-none text-success" style="font-size:14px">View Details</a>';
+
+                if (Auth::user()->type == 'doctor') {
+                    $buttons .= ' <a href="' . route('add.preception', ['id' => $row->id]) . '" class="btn btn-primary btn-sm">Add Items</a>';
+                }
+
+                if (Auth::user()->type == 'admin') {
+                    $buttons .= ' <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#discountModal" data-id="' . $row->id . '">Add Discount</button>';
+                }
+
+                return $buttons;
+            })
+            ->rawColumns(['actions']) // Ensure buttons are displayed properly
+            ->make(true);
     }
 
     public function addPreception($id)
@@ -121,26 +147,7 @@ class TicketDetailsController extends Controller
 
     public function todayAppoinments()
     {
-        // Get today's date
-        $today = now()->toDateString(); // Format: YYYY-MM-DD
-
-        $appointments = Appoinment::with('patient', 'doctor')
-            ->when(Auth::user()->type !== 'admin', function ($query) {
-                $query->where('doctor_id', Auth::user()->id);
-            })
-            ->whereDate('appointment_date', $today)
-            ->orderBy('id', 'desc')
-            ->get();
-        $medicines = Medicine::get();
-        $instructions = Instructions::get();
-        $labs = Lab::get();
-
-        return view('admin.entries', [
-            'tickets' => $appointments,
-            'medicines' => $medicines,
-            'lab_tests' => $labs,
-            'instructions' => $instructions
-        ]);
+        return view('admin.entries', ['today' => 1]);
     }
 
     public function ticketDetail($id)
@@ -148,7 +155,7 @@ class TicketDetailsController extends Controller
         $ticket = Appoinment::with('patient', 'doctor', 'medicines', 'labTests', 'clinicNotes', 'instructions')->find($id);
         return view('admin.ticketDetail', ['appointment' => $ticket]);
     }
-        public function patientHeistory($patientId)
+    public function patientHeistory($patientId)
     {
         $appointments = Appoinment::with('doctor', 'medicines', 'labTests', 'clinicNotes', 'instructions')
             ->where('patient_id', $patientId)

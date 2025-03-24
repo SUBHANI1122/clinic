@@ -19,51 +19,19 @@
             <table class="table table-bordered" id="entries-table">
                 <thead>
                     <tr>
-                        <th scope="col">Sr #</th>
-                        <th scope="col">Invoice No</th>
-                        <th scope="col">Dr Name</th>
-                        <th scope="col">Patient Name</th>
-                        <th scope="col">Patient Phone</th>
-                        <th scope="col">Age</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Appointment Date</th>
-                        <th scope="col">Total Amount</th>
-                        <th scope="col">Discount Amount</th>
+                        <th>Sr #</th>
+                        <th>Invoice No</th>
+                        <th>Dr Name</th>
+                        <th>Patient Name</th>
+                        <th>Patient Phone</th>
+                        <th>Age</th>
+                        <th>Address</th>
+                        <th>Appointment Date</th>
+                        <th>Total Amount</th>
+                        <th>Discount Amount</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach ($tickets as $index => $ticket)
-                    <tr>
-                        <td>{{ $index + 1}}</td>
-                        <td>invoice-{{$ticket->id }}</td>
-                        <td>{{ $ticket->doctor->name }}</td>
-                        <td>{{ $ticket->patient->name }}</td>
-                        <td>{{ $ticket->patient->phone }}</td>
-                        <td>{{ $ticket->patient->age }}</td>
-                        <td>{{ $ticket->patient->address }}</td>
-                        <td>{{ \Carbon\Carbon::parse($ticket->appointment_date)->format('d-m-y') }}</td>
-                        <td>{{ $ticket->total_amount }}</td>
-                        <td>{{ $ticket->discount }}</td>
-                        <td>
-                           <a href="{{ route('patientHeistory', ['id' => $ticket->patient->id]) }}"
-                                class="text-decoration-none text-success" style="font-size:14px">View Details</a>
-                            @if (Auth::user()->type == 'doctor')
-                            <a href="{{ route('add.preception', ['id' => $ticket->id]) }}" class="btn btn-primary btn-sm">
-                                Add Items
-                            </a>
-
-                            @endif
-                            @if (Auth::user()->type == 'admin')
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#discountModal" data-id="{{ $ticket->id }}">
-                                Add Discount
-                            </button>
-                            @endif
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
             </table>
         </div>
     </div>
@@ -90,12 +58,113 @@
         </div>
     </div>
 
-
-
 </div>
 
 <script>
     $(document).ready(function() {
+
+        $(document).ready(function() {
+            let today = {{ $today }};
+
+            function loadAppointments() {
+                $('#entries-table').DataTable({
+                    destroy: true, 
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "{{ route('tickets.fetch') }}",
+                        data: {
+                            today: today
+                        }
+                    },
+                    dom: '<"top"lBf>rtip',
+                    buttons: [{
+                        extend: 'excelHtml5',
+                        text: 'Export to Excel',
+                        title: 'Appointments',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                        }
+                    }],
+                    lengthMenu: [
+                        [10, 50, 100, -1],
+                        [10, 50, 100, "All"]
+                    ],
+                    pageLength: 10,
+                    columnDefs: [{
+                        targets: 0,
+                        orderable: false
+                    }],
+                    order: [
+                        [7, 'asc']
+                    ],
+                    columns: [{
+                            data: 'DT_RowIndex',
+                            name: 'DT_RowIndex',
+                            orderable: false,
+                            searchable: false
+                        },
+                        {
+                            data: 'id',
+                            name: 'id',
+                            render: data => `invoice-${data}`
+                        },
+                        {
+                            data: 'doctor.name',
+                            name: 'doctor.name'
+                        },
+                        {
+                            data: 'patient.name',
+                            name: 'patient.name'
+                        },
+                        {
+                            data: 'patient.phone',
+                            name: 'patient.phone'
+                        },
+                        {
+                            data: 'patient.age',
+                            name: 'patient.age'
+                        },
+                        {
+                            data: 'patient.address',
+                            name: 'patient.address'
+                        },
+                        {
+                            data: 'appointment_date',
+                            name: 'appointment_date'
+                        },
+                        {
+                            data: 'total_amount',
+                            name: 'total_amount'
+                        },
+                        {
+                            data: 'discount',
+                            name: 'discount'
+                        },
+                        {
+                            data: 'actions',
+                            name: 'actions',
+                            orderable: false,
+                            searchable: false
+                        }
+                    ]
+                });
+            }
+
+            loadAppointments();
+
+            $('#allAppointments').click(function() {
+                today = 0;
+                loadAppointments();
+            });
+
+            // Switch to Today's Appointments
+            $('#todayAppointments').click(function() {
+                today = 1;
+                loadAppointments();
+            });
+        });
+
 
         $('#discountModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);

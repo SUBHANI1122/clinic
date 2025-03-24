@@ -204,30 +204,6 @@
         @endif
     });
 </script>
-<script type="text/Javascript">
-    $(document).ready(function(){
-    $('#entries-table').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                extend: 'excelHtml5',
-                text: 'Export to Excel',
-                title: 'Appointments',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6,7,8,9]
-                }
-            },
-        ],
-        columnDefs: [
-            {
-                targets: 0,
-                orderable: false 
-            }
-        ],
-        // order: [[7, 'asc']] 
-    });
-    })
-</script>
 
 <script>
     $(document).ready(function() {
