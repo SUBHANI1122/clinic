@@ -15,13 +15,32 @@ class MedicineController extends Controller
     }
     public function fetch()
     {
-        $medicines = Medicine::select(['id', 'name', 'size'])->get();
+        $medicines = Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get();
         return datatables()->of($medicines)->make(true);
     }
 
     public function store(Request $request)
     {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'size' => 'required|string|max:255',
+            'box_quantity' => 'required|integer|min:0',
+            'units_per_box' => 'required|integer|min:1',
+            'price' => 'required|integer',
+        ]);
+
+        $request->merge([
+            'price_per_unit' => $request->price / $request->units_per_box
+        ]);
+
+        $request->merge([
+            'sale_price_per_unit' => $request->sale_price / $request->units_per_box
+        ]);
+
+        // Create a new medicine record
         $medicine = Medicine::create($request->all());
+
         return response()->json([
             'success' => true,
             'medicine' => $medicine
@@ -30,10 +49,33 @@ class MedicineController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'size' => 'required|string|max:255',
+            'box_quantity' => 'required|integer|min:0',
+            'units_per_box' => 'required|integer|min:1',
+            'price' => 'required|integer',
+            'sale_price' => 'required|integer',
+        ]);
+
         $medicine = Medicine::findOrFail($id);
+
+        $request->merge([
+            'price_per_unit' => $request->price / $request->units_per_box
+        ]);
+        $request->merge([
+            'sale_price_per_unit' => $request->sale_price / $request->units_per_box
+        ]);
+
         $medicine->update($request->all());
-        return response()->json(['success' => true]);
+
+        return response()->json([
+            'success' => true,
+            'medicine' => $medicine
+        ]);
     }
+
 
     public function destroy($id)
     {

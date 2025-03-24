@@ -53,6 +53,7 @@ Route::get('/optimize-clear', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     Route::get('/registrations', [App\Http\Controllers\TicketDetailsController::class, 'ticketEntries'])->name('bookings');
+    Route::get('/tickets/fetch', [App\Http\Controllers\TicketDetailsController::class, 'fetchTickets'])->name('tickets.fetch');
     Route::get('/today/appoinments', [App\Http\Controllers\TicketDetailsController::class, 'todayAppoinments'])->name('bookings.today');
     
         Route::get('add/appoinments/preception/{id}', [App\Http\Controllers\TicketDetailsController::class, 'addPreception'])->name('add.preception');
@@ -70,7 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/medicines/index', [App\Http\Controllers\MedicineController::class, 'index'])->name('medicines');
     Route::get('/medicines/fetch', [App\Http\Controllers\MedicineController::class, 'fetch'])->name('medicines.fetch');
     Route::post('/medicines', [App\Http\Controllers\MedicineController::class, 'store'])->name('medicines.store');
-    Route::put('/medicines/{id}', [App\Http\Controllers\MedicineController::class, 'update']);
+    Route::patch('/medicines/{id}', [App\Http\Controllers\MedicineController::class, 'update']);
     Route::delete('/medicines/{id}', [App\Http\Controllers\MedicineController::class, 'destroy']);
 
     Route::get('/medicines/search', [App\Http\Controllers\MedicineController::class, 'search'])->name('medicines.search');

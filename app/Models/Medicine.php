@@ -12,6 +12,12 @@ class Medicine extends Model
     protected $fillable = [
         'added_by',
         'name',
-        'size'
+        'size',
+        'box_quantity',
+        'units_per_box',
+        'price',
+        'sale_price',
+        'price_per_unit',
+        'sale_price_per_unit'
     ];
 }
