@@ -113,6 +113,9 @@ class TicketDetailsController extends Controller
             $query->whereDate('appointment_date', now()->toDateString());
         }
 
+        $query->orderBy('id', 'desc'); 
+
+
         return datatables()->eloquent($query)
             ->addIndexColumn()
             ->editColumn('appointment_date', function ($row) {

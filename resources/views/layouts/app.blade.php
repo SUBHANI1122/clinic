@@ -42,11 +42,8 @@
             });
         });
     </script>
+    @livewireStyles
 </head>
-
-
-
-
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
@@ -110,6 +107,12 @@
                                         &nbsp;Medicines</span></a>
                             </li>
                             <li>
+                                <a href="{{ route('sales') }}" class="nav-link px-0 align-middle py-0">
+                                    <i class="fs-4 bi-table"></i> <span class="ms-1  text-success"><i
+                                            class="fas fa-sign-in-alt"></i>
+                                        &nbsp;Sale</span></a>
+                            </li>
+                            <li>
                                 <a href="{{ route('labs') }}" class="nav-link px-0 align-middle py-0">
                                     <i class="fs-4 bi-table"></i> <span class="ms-1  text-success"><i
                                             class="fas fa-sign-in-alt"></i>
@@ -152,6 +155,7 @@
             </div>
         </div>
     </div>
+    @livewireScripts
 </body>
 <script type="text/javascript">
     $(document).ready(function() {
