@@ -105,14 +105,22 @@
                 <tr>
                     <td>{{ $item->medicine->name }}</td>
                     <td>{{ $item->quantity }}</td>
-                    <td>${{ number_format($item->sale_price, 2) }}</td>
-                    <td>${{ number_format($item->subtotal, 2) }}</td>
+                    <td>{{ number_format($item->sale_price, 2) }}</td>
+                    <td>{{ number_format($item->subtotal, 2) }}</td>
                 </tr>
                 @endforeach
+            <tfoot>
+                <th colspan="3" style="text-align: right;">
+                Total:
+                </th>
+                <th >
+                    <h3>{{ number_format($sale->total_amount, 2) }}</h3>
+                </th>
+            </tfoot>
             </tbody>
         </table>
 
-        <h3>Total: ${{ number_format($sale->total_amount, 2) }}</h3>
+
 
         <div class="footer">
             <p>Thank you for your purchase!</p>

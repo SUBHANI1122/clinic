@@ -18,6 +18,7 @@ class Medicine extends Model
         'price',
         'sale_price',
         'price_per_unit',
-        'sale_price_per_unit'
+        'sale_price_per_unit',
+        'total_units'
     ];
 }

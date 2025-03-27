@@ -11,7 +11,12 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center"
                         wire:click="addMedicine({{ $medicine->id }})"
                         style="cursor: pointer;">
-                        <span>{{ $medicine->name }} - {{ $medicine->sale_price_per_unit }}</span>
+                        <span>{{ $medicine->name }}</span>
+
+                        <div>
+                            <span class="badge bg-primary">{{ $medicine->sale_price_per_unit }} Rs Per Unit</span>
+                            <span class="badge bg-success">{{ $medicine->total_units }} Available QTY</span>
+                        </div>
                     </li>
                     @endforeach
                 </ul>
@@ -39,13 +44,13 @@
                             @foreach ($cart as $index => $item)
                             <tr>
                                 <td>{{ $item['name'] }}</td>
-                                <td>${{ $item['sale_price_per_unit'] }}</td>
+                                <td>{{ $item['sale_price_per_unit'] }}</td>
                                 <td>
                                     <input type="number" wire:model="cart.{{ $index }}.quantity"
                                         wire:change="updateQuantity({{ $index }}, $event.target.value)"
                                         class="form-control" style="width: 70px;" min="1">
                                 </td>
-                                <td>${{ number_format($item['subtotal'], 2) }}</td>
+                                <td>{{ number_format($item['subtotal'], 2) }}</td>
                                 <td>
                                     <button wire:click="removeItem({{ $index }})" class="btn btn-danger btn-sm">
                                         Remove
@@ -81,38 +86,38 @@
             </div>
             <br>
             <div class="row">
-                    <div class="row">
-                            <div class="card shadow-sm p-3">
-                                <h5 class="mb-3">Latest 5 Sales</h5>
+                <div class="row">
+                    <div class="card shadow-sm p-3">
+                        <h5 class="mb-3">Latest 5 Sales</h5>
 
-                                @if (!empty($latestSales))
-                                <table class="table table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Total Price</th>
-                                            <th>Invoice</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($latestSales as $sale)
-                                        <tr>
-                                            <td>{{ $sale->created_at->format('d M Y h:i A') }}</td>
-                                            <td>${{ number_format($sale->total_amount, 2) }}</td>
-                                            <td>
-                                                <button wire:click="printInvoice({{ $sale->id }})" class="btn btn-info btn-sm">
-                                                    <i class="fas fa-file-pdf"></i> Print
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                @else
-                                <p class="text-muted text-center">No sales found</p>
-                                @endif
-                            </div>
+                        @if (!empty($latestSales))
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Total Price</th>
+                                    <th>Invoice</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($latestSales as $sale)
+                                <tr>
+                                    <td>{{ $sale->created_at->format('d M Y h:i A') }}</td>
+                                    <td>{{ number_format($sale->total_amount, 2) }}</td>
+                                    <td>
+                                        <button wire:click="printInvoice({{ $sale->id }})" class="btn btn-info btn-sm">
+                                            <i class="fas fa-file-pdf"></i> Print
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        @else
+                        <p class="text-muted text-center">No sales found</p>
+                        @endif
                     </div>
+                </div>
             </div>
 
         </div>
