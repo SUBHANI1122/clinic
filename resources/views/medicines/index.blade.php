@@ -101,6 +101,7 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route('medicines.fetch') }}",
+             order: [[0, 'desc']],
             columns: [{
                     data: 'id',
                     name: 'id',
@@ -157,7 +158,7 @@
                         data-size="${row.size}" 
                         data-box_quantity="${row.box_quantity}" 
                         data-units_per_box="${row.units_per_box}"
-                        data-price="${row.purchase_price_per_box}" 
+                        data-price="${row.price}" 
                         data-sale_price="${row.sale_price}">
                         Edit
                     </button>
@@ -172,81 +173,87 @@
 
 
 
-        $('#newMedicineBtn').on('click', function() {
-            $('#medicineModal').modal('show');
-            $('#medicineModalTitle').text('Add New Medicine');
-            $('#medicineForm')[0].reset();
-            $('#medicineId').val('');
-        });
+$('#newMedicineBtn').on('click', function() {
+    $('#medicineModal').modal('show');
+    $('#medicineModalTitle').text('Add New Medicine');
+    $('#medicineForm')[0].reset();
+    $('#medicineId').val('');
+});
 
-        $(document).on('click', '.editMedicine', function() {
-            $('#medicineModal').modal('show');
-            $('#medicineModalTitle').text('Edit Medicine');
-            $('#medicineId').val($(this).data('id'));
-            $('#medicineName').val($(this).data('name'));
-            $('#medicineSize').val($(this).data('size'));
-            $('#boxQuantity').val($(this).data('box_quantity'));
-            $('#unitsPerBox').val($(this).data('units_per_box'));
-            $('#price').val($(this).data('price'));
-            $('#sale_price').val($(this).data('sale_price'));
-        });
+$(document).on('click', '.editMedicine', function() {
+    $('#medicineModal').modal('show');
+    $('#medicineModalTitle').text('Edit Medicine');
+    $('#medicineId').val($(this).data('id'));
+    $('#medicineName').val($(this).data('name'));
+    $('#medicineSize').val($(this).data('size'));
+    $('#boxQuantity').val($(this).data('box_quantity'));
+    $('#unitsPerBox').val($(this).data('units_per_box'));
+    $('#price').val($(this).data('price'));
+    $('#sale_price').val($(this).data('sale_price'));
+});
 
-        // Save or update medicine via AJAX
-        $('#saveMedicine').on('click', function() {
-            const formData = {
-                id: $('#medicineId').val(),
-                name: $('#medicineName').val(),
-                size: $('#medicineSize').val(),
-                box_quantity: $('#boxQuantity').val(),
-                units_per_box: $('#unitsPerBox').val(),
-                price: $('#price').val(),
-                sale_price: $('#sale_price').val(),
-                _token: "{{ csrf_token() }}"
-            };
+// Save or update medicine via AJAX
+$('#saveMedicine').on('click', function() {
+    const medicineId = $('#medicineId').val();
+    const formData = {
+        name: $('#medicineName').val(),
+        size: $('#medicineSize').val(),
+        box_quantity: $('#boxQuantity').val(),
+        units_per_box: $('#unitsPerBox').val(),
+        price: $('#price').val(),
+        sale_price: $('#sale_price').val(),
+        _token: "{{ csrf_token() }}"
+    };
 
-            const url = formData.id ? `/medicines/${formData.id}` : "{{ route('medicines.store') }}";
-            const method = formData.id ? 'PATCH' : 'POST';
+    let url = "{{ route('medicines.store') }}";
+    let method = 'POST';
 
-            $.ajax({
-                url: url,
-                method: method,
-                data: formData,
-                success: function(response) {
-                    if (response.success) {
-                        $('#medicineModal').modal('hide');
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Medicine',
-                            text: 'Medicine saved successfully!',
-                            customClass: {
-                                confirmButton: 'btn btn-success'
-                            }
-                        });
-                        table.ajax.reload();
-                        $('#medicineForm')[0].reset();
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Medicine',
-                            text: 'Failed to save medicine!',
-                            customClass: {
-                                confirmButton: 'btn btn-success'
-                            }
-                        });
+    if (medicineId) {
+        url = `/medicines/${medicineId}`;
+        formData._method = 'PATCH'; // Use PATCH for updates
+    }
+
+    $.ajax({
+        url: url,
+        method: 'POST', // Always use POST; PATCH is set via _method
+        data: formData,
+        success: function(response) {
+            if (response.success) {
+                $('#medicineModal').modal('hide');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Medicine',
+                    text: 'Medicine saved successfully!',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
                     }
-                },
-                error: function() {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Medicine',
-                        text: 'An error occurred. Please try again.',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
-                    });
+                });
+                table.ajax.reload();
+                $('#medicineForm')[0].reset();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Medicine',
+                    text: 'Failed to save medicine!',
+                    customClass: {
+                        confirmButton: 'btn btn-danger'
+                    }
+                });
+            }
+        },
+        error: function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Medicine',
+                text: 'An error occurred. Please try again.',
+                customClass: {
+                    confirmButton: 'btn btn-danger'
                 }
             });
-        });
+        }
+    });
+});
+
 
 
         // Delete medicine

@@ -43,7 +43,7 @@ class Sales extends Component
 
             foreach ($this->cart as $index => $item) {
                 if ($item['id'] == $medicine->id) {
-                    if (($this->cart[$index]['quantity'] + 1) > $medicine->units_per_box) {
+                    if (($this->cart[$index]['quantity'] + 1) > $medicine->total_units) {
                         session()->flash('error', 'Not enough stock available!');
                         return;
                     }
@@ -78,7 +78,7 @@ class Sales extends Component
             session()->flash('error', 'Medicine not found!');
             return;
         }
-        if ($quantity > $medicine->units_per_box) {
+        if ($quantity > $medicine->total_units) {
             session()->flash('error', 'Not enough stock available!');
             return;
         }
@@ -142,7 +142,7 @@ class Sales extends Component
             // Reduce stock
             $medicine = Medicine::find($item['id']);
             if ($medicine) {
-                $medicine->units_per_box -= $item['quantity'];
+                $medicine->total_units -= $item['quantity'];
                 $medicine->save();
             }
         }

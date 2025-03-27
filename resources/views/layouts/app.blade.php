@@ -99,13 +99,6 @@
                                             class="fas fa-sign-in-alt"></i>
                                         &nbsp;Today Appointments</span></a>
                             </li>
-
-                            <li>
-                                <a href="{{ route('medicines') }}" class="nav-link px-0 align-middle py-0">
-                                    <i class="fs-4 bi-table"></i> <span class="ms-1  text-success"><i
-                                            class="fas fa-sign-in-alt"></i>
-                                        &nbsp;Medicines</span></a>
-                            </li>
                             <li>
                                 <a href="{{ route('sales') }}" class="nav-link px-0 align-middle py-0">
                                     <i class="fs-4 bi-table"></i> <span class="ms-1  text-success"><i
@@ -141,6 +134,12 @@
                                     <i class="fs-4 bi-table"></i> <span class="ms-1  text-success"><i
                                             class="fas fa-sign-in-alt"></i>
                                         &nbsp;Appointments</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ route('medicines') }}" class="nav-link px-0 align-middle py-0">
+                                    <i class="fs-4 bi-table"></i> <span class="ms-1  text-success"><i
+                                            class="fas fa-sign-in-alt"></i>
+                                        &nbsp;Medicines</span></a>
                             </li>
                             @endif
                         </ul>
