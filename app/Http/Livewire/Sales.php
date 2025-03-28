@@ -19,15 +19,55 @@ class Sales extends Component
     public $saleId;
     public $latestSales = [];
 
+    public $selectedSale;
+    public $selectedSaleItems = [];
+
     public function mount()
     {
         $this->medicines = Medicine::all();
         $this->fetchLatestSales();
     }
 
+    public function loadSale($saleId)
+    {
+        $this->selectedSale = Sale::find($saleId);
+        $this->selectedSaleItems = SaleItem::where('sale_id', $saleId)->with('medicine')->get();
+        $this->dispatchBrowserEvent('openEditSaleModal');
+    }
+
+
+    public function removeSaleItem($saleItemId)
+    {
+        $saleItem = SaleItem::find($saleItemId);
+        if ($saleItem) {
+            // Restore stock
+            $medicine = Medicine::find($saleItem->medicine_id);
+            if ($medicine) {
+                $medicine->total_units += $saleItem->quantity;
+                $medicine->save();
+            }
+
+            // Reduce the total sale amount
+            $sale = Sale::find($saleItem->sale_id);
+            if ($sale) {
+                $sale->total_amount -= $saleItem->subtotal;
+                $sale->save();
+            }
+
+            // Delete the item
+            $saleItem->delete();
+
+            session()->flash('success', 'Item removed and stock restored!');
+            $this->loadSale($saleItem->sale_id);
+        } else {
+            session()->flash('error', 'Sale item not found!');
+        }
+    }
+
+
     public function fetchLatestSales()
     {
-        $this->latestSales = Sale::latest()->take(5)->get();
+        $this->latestSales = Sale::latest()->get();
     }
 
     public function updatedSearch()
@@ -116,7 +156,7 @@ class Sales extends Component
 
         foreach ($this->cart as $item) {
             $medicine = Medicine::find($item['id']);
-            if (!$medicine || $item['quantity'] > $medicine->units_per_box) {
+            if (!$medicine || $item['quantity'] > $medicine->total_units) {
                 session()->flash('error', 'Not enough stock for ' . $item['name'] . '!');
                 return;
             }

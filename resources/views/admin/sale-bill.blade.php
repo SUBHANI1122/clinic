@@ -103,7 +103,7 @@
             <tbody>
                 @foreach ($sale->items as $item)
                 <tr>
-                    <td>{{ $item->medicine->name }}</td>
+                    <td>{{ $item->medicine->name }} - {{ $item->medicine->size }}</td>
                     <td>{{ $item->quantity }}</td>
                     <td>{{ number_format($item->sale_price, 2) }}</td>
                     <td>{{ number_format($item->subtotal, 2) }}</td>
