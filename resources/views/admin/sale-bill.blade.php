@@ -6,123 +6,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice #{{ $sale->id }}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                color: #333;
+            }
 
-        .container {
-            width: 80%;
-            margin: auto;
-            padding: 20px;
-            border: 2px solid #000;
-            border-radius: 10px;
-        }
+            .invoice-container {
+                width: 50%;
+                margin: 20px auto;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
 
-        .doctor-info-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+            .header h2 {
+                font-size: 24px;
+                color: #333;
+                margin: 0;
+            }
 
-        .doctor-info {
-            width: 30%;
-        }
-
-        .logo {
-            width: 100px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            font-weight: bold;
+            .invoice-details p {
+                font-size: 16px;
+                line-height: 1.5;
+                margin: 5px 0;
+            }
         }
     </style>
 </head>
 
 <body>
-
-    <div class="container">
+    <div class="invoice-container">
         <div class="header">
-            <h1>Sale Invoice</h1>
-            <p>Date: {{ $sale->created_at->format('d M Y') }}</p>
-            <p>Sold by: {{ $sale->user->name }}</p>
+            <h2>Medical Care & Physiotherapy Clinic</h2>
+            <p>Citi Housing B.Block Fountain Chowk Near Sadiq Mart. 03324276305</p>
         </div>
 
-        <div class="doctor-info-section">
-            <div class="doctor-info">
-                <h2>Dr. Ayesha Afraz</h2>
-                <p>MBBS, RMP, FCPS-1</p>
-                <p>Medical Care & Physiotherapy Clinic</p>
-                <p>Timings: 3PM - 11PM</p>
-            </div>
-            <div>
-                <img class="logo" src="{{ url('images/logo.png') }}" alt="Clinic Logo">
-            </div>
-            <div class="doctor-info">
-                <h2>Dr. Afraz Ahmad</h2>
-                <p>Consultant Physiotherapist</p>
-                <p>City Hospital Commissoner Road</p>
-                <p>Timings: 11AM - 5PM</p>
-            </div>
+        <h3 style="text-align: center;">Invoice #{{ $sale->id }}</h3>
+        <div class="invoice-details">
+            <p><strong>Sold by:</strong> {{ $sale->user->name }}</p>
+            <p><strong>Date:</strong> {{ $sale->created_at->format('d M Y') }}</p>
         </div>
 
-        <table>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
             <thead>
                 <tr>
-                    <th>Medicine</th>
-                    <th>Quantity</th>
-                    <th>Sale Price</th>
-                    <th>Subtotal</th>
+                    <th style="border: 1px solid black; padding: 8px;">Medicine</th>
+                    <th style="border: 1px solid black; padding: 8px;">Quantity</th>
+                    <th style="border: 1px solid black; padding: 8px;">Sale Price</th>
+                    <th style="border: 1px solid black; padding: 8px;">Subtotal</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($sale->items as $item)
                 <tr>
-                    <td>{{ $item->medicine->name }} - {{ $item->medicine->size }}</td>
-                    <td>{{ $item->quantity }}</td>
-                    <td>{{ number_format($item->sale_price, 2) }}</td>
-                    <td>{{ number_format($item->subtotal, 2) }}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{{ $item->medicine->name }} - {{ $item->medicine->size }}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{{ $item->quantity }}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{{ number_format($item->sale_price, 2) }}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{{ number_format($item->subtotal, 2) }}</td>
                 </tr>
                 @endforeach
-            <tfoot>
-                <th colspan="3" style="text-align: right;">
-                Total:
-                </th>
-                <th >
-                    <h3>{{ number_format($sale->total_amount, 2) }}</h3>
-                </th>
-            </tfoot>
             </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3" style="text-align: right; border: 1px solid black; padding: 8px;">Total:</th>
+                    <th style="border: 1px solid black; padding: 8px;">{{ number_format($sale->total_amount, 2) }}</th>
+                </tr>
+            </tfoot>
         </table>
 
-
-
-        <div class="footer">
+        <div style="text-align: center; margin-top: 20px; font-weight: bold;">
             <p>Thank you for your purchase!</p>
         </div>
     </div>
@@ -135,7 +96,6 @@
             };
         };
     </script>
-
 </body>
 
 </html>

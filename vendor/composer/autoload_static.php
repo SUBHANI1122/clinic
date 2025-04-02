@@ -605,6 +605,7 @@ class ComposerStaticInit401f84890f321e18232ea7661eb0b5be
         'App\\Models\\Prescription' => __DIR__ . '/../..' . '/app/Models/Prescription.php',
         'App\\Models\\Sale' => __DIR__ . '/../..' . '/app/Models/Sale.php',
         'App\\Models\\SaleItem' => __DIR__ . '/../..' . '/app/Models/SaleItem.php',
+        'App\\Models\\SaleReturn' => __DIR__ . '/../..' . '/app/Models/SaleReturn.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Notifications\\InvoiceFailedNotification' => __DIR__ . '/../..' . '/app/Notifications/InvoiceFailedNotification.php',
         'App\\Notifications\\ReceiptNotification' => __DIR__ . '/../..' . '/app/Notifications/ReceiptNotification.php',

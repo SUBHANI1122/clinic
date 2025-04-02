@@ -48,6 +48,7 @@ return array(
     'App\\Models\\Prescription' => $baseDir . '/app/Models/Prescription.php',
     'App\\Models\\Sale' => $baseDir . '/app/Models/Sale.php',
     'App\\Models\\SaleItem' => $baseDir . '/app/Models/SaleItem.php',
+    'App\\Models\\SaleReturn' => $baseDir . '/app/Models/SaleReturn.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Notifications\\InvoiceFailedNotification' => $baseDir . '/app/Notifications/InvoiceFailedNotification.php',
     'App\\Notifications\\ReceiptNotification' => $baseDir . '/app/Notifications/ReceiptNotification.php',
