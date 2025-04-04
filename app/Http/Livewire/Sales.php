@@ -12,7 +12,7 @@ use App\Models\SaleReturn;
 
 class Sales extends Component
 {
-    public $search = '';
+    public $medicineSearch = ''; // Updated search variable
     public $medicines = [];
     public $cart = [];
     public $totalAmount = 0;
@@ -26,6 +26,7 @@ class Sales extends Component
     // Sale Return Properties
     public $returnSaleId;
     public $returnItems = [];
+    public $saleReturns = [];
 
     protected $rules = [
         'selectedSaleItems.*.quantity' => 'required|integer|min:1',
@@ -35,6 +36,12 @@ class Sales extends Component
     {
         $this->medicines = Medicine::all();
         $this->fetchLatestSales();
+    }
+
+    // 🟢 Search Medicine in Real-time
+    public function updatedMedicineSearch()
+    {
+        $this->medicines = Medicine::where('name', 'like', '%' . $this->medicineSearch . '%')->get();
     }
 
     // 🟢 Load Existing Sale for Editing
@@ -50,14 +57,22 @@ class Sales extends Component
     {
         $this->returnSaleId = $saleId;
         $this->returnItems = SaleItem::where('sale_id', $saleId)->with('medicine')->get()->toArray();
-        $this->dispatchBrowserEvent('openReturnSaleModal'); // Open modal in frontend
+        $this->dispatchBrowserEvent('openReturnSaleModal'); 
     }
 
+    public function viewSaleDetails($saleId)
+    {
+        $this->selectedSale = Sale::find($saleId);
+        $this->selectedSaleItems = SaleItem::where('sale_id', $saleId)->with('medicine')->get();
+        $this->saleReturns = SaleReturn::where('sale_id', $saleId)->with('medicine')->get();
+
+        $this->dispatchBrowserEvent('openViewSaleModal'); 
+    }
 
     public function processSaleReturn()
     {
-        $sale = Sale::find($this->returnSaleId); // Get the sale
-        $totalAdjustment = 0; // Track total bill adjustment
+        $sale = Sale::find($this->returnSaleId);
+        $totalAdjustment = 0;
 
         foreach ($this->returnItems as $index => $item) {
             $saleItem = SaleItem::where('sale_id', $sale->id)
@@ -65,20 +80,17 @@ class Sales extends Component
                 ->first();
 
             if ($saleItem) {
-                $medicine = Medicine::find($item['medicine']['id']); // Find medicine in stock
-                $newQuantity = $item['quantity']; // Updated quantity from input
-                $oldQuantity = $saleItem->quantity; // Original sold quantity
+                $medicine = Medicine::find($item['medicine']['id']);
+                $newQuantity = $item['quantity'];
+                $oldQuantity = $saleItem->quantity;
 
                 if ($newQuantity < $oldQuantity) {
-                    // **Return detected (Decrease in quantity)**
                     $returnedQuantity = $oldQuantity - $newQuantity;
-                    $subtotal = $returnedQuantity * $saleItem->sale_price; // Calculate return amount
+                    $subtotal = $returnedQuantity * $saleItem->sale_price;
 
-                    // **Update stock (Add back returned items)**
                     $medicine->total_units += $returnedQuantity;
                     $medicine->save();
 
-                    // **Save sale return record**
                     SaleReturn::create([
                         'sale_id' => $sale->id,
                         'sale_item_id' => $saleItem->id,
@@ -87,48 +99,37 @@ class Sales extends Component
                         'return_amount' => $subtotal,
                     ]);
 
-                    // **Adjust total sale amount**
-                    $totalAdjustment -= $subtotal; // Subtract return amount
+                    $totalAdjustment -= $subtotal;
                 } elseif ($newQuantity > $oldQuantity) {
-                    // **Additional purchase detected (Increase in quantity)**
                     $addedQuantity = $newQuantity - $oldQuantity;
-                    $additionalCost = $addedQuantity * $saleItem->sale_price; // Calculate extra cost
+                    $additionalCost = $addedQuantity * $saleItem->sale_price;
 
-                    // **Check if stock is available**
                     if ($medicine->total_units >= $addedQuantity) {
-                        // **Deduct stock**
                         $medicine->total_units -= $addedQuantity;
                         $medicine->save();
 
-                        // **Adjust total sale amount**
-                        $totalAdjustment += $additionalCost; // Add additional cost
+                        $totalAdjustment += $additionalCost;
                     } else {
                         session()->flash('error', "Not enough stock available for {$medicine->name}.");
                         return;
                     }
                 }
 
-                // **Update sale item quantity & subtotal**
                 $saleItem->quantity = $newQuantity;
-                $saleItem->subtotal = $newQuantity * $saleItem->sale_price; // Update subtotal
+                $saleItem->subtotal = $newQuantity * $saleItem->sale_price;
                 $saleItem->save();
             }
         }
 
-        // **Update sale total amount**
-        $sale->total_amount += $totalAdjustment; // Adjust total
+        $sale->total_amount += $totalAdjustment;
         $sale->save();
 
-        // **Reset return items**
         $this->returnItems = [];
         $this->returnSaleId = null;
 
-        // **Close modal and show success message**
         $this->dispatchBrowserEvent('closeReturnSaleModal');
         session()->flash('success', 'Sale update processed successfully!');
     }
-
-
 
     // 🟢 Remove Sale Item
     public function removeSaleItem($itemId)
@@ -155,11 +156,6 @@ class Sales extends Component
     public function fetchLatestSales()
     {
         $this->latestSales = Sale::latest()->get();
-    }
-
-    public function updatedSearch()
-    {
-        $this->medicines = Medicine::where('name', 'like', '%' . $this->search . '%')->get();
     }
 
     public function addMedicine($medicineId)
@@ -227,59 +223,6 @@ class Sales extends Component
     public function updateTotal()
     {
         $this->totalAmount = array_sum(array_column($this->cart, 'subtotal'));
-    }
-
-    public function completeSale()
-    {
-        if (empty($this->cart)) {
-            session()->flash('error', 'No items in cart!');
-            return;
-        }
-
-        foreach ($this->cart as $item) {
-            $medicine = Medicine::find($item['id']);
-            if (!$medicine || $item['quantity'] > $medicine->total_units) {
-                session()->flash('error', 'Not enough stock for ' . $item['name'] . '!');
-                return;
-            }
-        }
-
-        $roundedTotal = ceil($this->totalAmount);
-
-        $sale = Sale::create([
-            'user_id' => auth()->id(),
-            'total_amount' => $roundedTotal,
-        ]);
-
-        foreach ($this->cart as $item) {
-            SaleItem::create([
-                'sale_id' => $sale->id,
-                'medicine_id' => $item['id'],
-                'quantity' => $item['quantity'],
-                'sale_price' => $item['sale_price_per_unit'],
-                'subtotal' => $item['subtotal'],
-            ]);
-
-            // Reduce stock
-            $medicine = Medicine::find($item['id']);
-            if ($medicine) {
-                $medicine->total_units -= $item['quantity'];
-                $medicine->save();
-            }
-        }
-
-        $this->cart = [];
-        $this->totalAmount = 0;
-        $this->saleCompleted = true;
-        $this->saleId = $sale->id;
-
-        $this->fetchLatestSales();
-        session()->flash('success', 'Sale completed successfully!');
-    }
-
-    public function printInvoice($saleId)
-    {
-        return redirect()->route('invoice.print', ['saleId' => $saleId]);
     }
 
     public function render()
