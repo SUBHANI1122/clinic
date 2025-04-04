@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Medicine;
 use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Support\Facades\Cache;
 
 
 class MedicineController extends Controller
@@ -15,9 +16,12 @@ class MedicineController extends Controller
     }
     public function fetch()
     {
-        $medicines = Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get();
+        $medicines = Cache::remember('all_medicines', now()->addHours(24), function () {
+            return Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get();
+        });
         return datatables()->of($medicines)->make(true);
     }
+
 
     public function store(Request $request)
     {
@@ -53,7 +57,6 @@ class MedicineController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validate the request data
         $request->validate([
             'name' => 'required|string|max:255',
             'size' => 'required|string|max:255',
@@ -78,11 +81,16 @@ class MedicineController extends Controller
 
         $medicine->update($request->all());
 
+        Cache::forget('all_medicines');
+
+        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get(), now()->addHours(24));
+
         return response()->json([
             'success' => true,
             'medicine' => $medicine
         ]);
     }
+
 
 
     public function destroy($id)
