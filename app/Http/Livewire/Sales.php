@@ -6,8 +6,6 @@ use Livewire\Component;
 use App\Models\Medicine;
 use App\Models\Sale;
 use App\Models\SaleItem;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Auth;
 use App\Models\SaleReturn;
 use Illuminate\Support\Facades\Cache;
 use Livewire\WithPagination;

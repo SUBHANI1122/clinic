@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SaleController;
 use App\Http\Livewire\Sales;
+use App\Http\Livewire\SalesPage;
 use App\Models\Sale;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -57,6 +58,7 @@ Route::get('/optimize-clear', function () {
 Route::middleware('auth')->group(function () {
 
     Route::get('/sales', [App\Http\Controllers\SaleController::class, 'index'])->name('sales');
+    Route::get('/create/sales', [App\Http\Controllers\SaleController::class, 'create'])->name('create.sale');
     Route::get('/invoice/{saleId}/print', [App\Http\Controllers\SaleController::class, 'printInvoice'])->name('invoice.print');
 
 

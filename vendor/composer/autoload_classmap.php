@@ -27,6 +27,7 @@ return array(
     'App\\Http\\Controllers\\TicketDetailsController' => $baseDir . '/app/Http/Controllers/TicketDetailsController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Livewire\\Sales' => $baseDir . '/app/Http/Livewire/Sales.php',
+    'App\\Http\\Livewire\\SalesPage' => $baseDir . '/app/Http/Livewire/SalesPage.php',
     'App\\Http\\Middleware\\Authenticate' => $baseDir . '/app/Http/Middleware/Authenticate.php',
     'App\\Http\\Middleware\\EncryptCookies' => $baseDir . '/app/Http/Middleware/EncryptCookies.php',
     'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => $baseDir . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
