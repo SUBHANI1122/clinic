@@ -25,7 +25,6 @@ class MedicineController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the request data
         $request->validate([
             'name' => 'required|string|max:255',
             'size' => 'required|string|max:255',
@@ -35,25 +34,22 @@ class MedicineController extends Controller
         ]);
 
         $request->merge([
-            'price_per_unit' => $request->price / $request->units_per_box
+            'price_per_unit' => $request->price / $request->units_per_box,
+            'total_units' => $request->box_quantity * $request->units_per_box,
+            'sale_price_per_unit' => $request->sale_price / $request->units_per_box,
         ]);
 
-        $request->merge([
-            'total_units' => $request->box_quantity * $request->units_per_box
-        ]);
-
-        $request->merge([
-            'sale_price_per_unit' => $request->sale_price / $request->units_per_box
-        ]);
-
-        // Create a new medicine record
         $medicine = Medicine::create($request->all());
+
+        Cache::forget('all_medicines');
+        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get(), now()->addHours(24));
 
         return response()->json([
             'success' => true,
             'medicine' => $medicine
         ]);
     }
+
 
     public function update(Request $request, $id)
     {
@@ -96,8 +92,14 @@ class MedicineController extends Controller
     public function destroy($id)
     {
         Medicine::findOrFail($id)->delete();
+
+        // Refresh cache
+        Cache::forget('all_medicines');
+        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get(), now()->addHours(24));
+
         return response()->json(['success' => true]);
     }
+
     public function search(Request $request)
     {
         $searchTerm = $request->input('query');
