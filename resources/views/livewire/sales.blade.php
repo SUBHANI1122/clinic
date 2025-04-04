@@ -4,20 +4,29 @@
         <div class="col-md-5">
             <div class="card shadow-sm p-3 mb-3">
                 <h5 class="mb-3">Search Medicine</h5>
-                <input type="text" wire:model="medicineSearch" class="form-control" placeholder="Search Medicine...">
+
+                <input type="text" wire:model.debounce.300ms="medicineSearch" class="form-control" placeholder="Search Medicine...">
+
                 <ul class="list-group mt-3">
-                    @foreach ($medicines as $medicine)
-                    <li class="list-group-item d-flex justify-content-between align-items-center" wire:click="addMedicine({{ $medicine->id }})" style="cursor: pointer;">
+                    @forelse ($medicines as $medicine)
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        wire:click="addMedicine({{ $medicine->id }})" style="cursor: pointer;">
                         <span>{{ $medicine->name }} - {{ $medicine->size }}</span>
                         <div>
                             <span class="badge bg-primary">{{ $medicine->sale_price_per_unit }} Rs Per Unit</span>
                             <span class="badge bg-success">{{ $medicine->total_units }} Available QTY</span>
                         </div>
                     </li>
-                    @endforeach
+                    @empty
+                    <li class="list-group-item text-center">No medicines found.</li>
+                    @endforelse
                 </ul>
+                <div class="mt-2">
+                    {{ $medicines->links() }}
+                </div>
             </div>
         </div>
+
 
         <!-- Sale Cart -->
         <div class="col-md-7">
@@ -51,7 +60,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <h4 class="text-end mt-3">Total: <strong>${{ number_format($totalAmount, 2) }}</strong></h4>
+                    <h4 class="text-end mt-3">Total: <strong>{{ number_format($totalAmount, 2) }}</strong></h4>
                     <button wire:click="completeSale" class="btn btn-success btn-lg w-100 mt-3">Complete Sale</button>
                     @if ($saleId)
                     <button wire:click="downloadInvoice({{ $saleId }})" class="btn btn-info btn-lg w-100 mt-3">Download Invoice PDF</button>
@@ -212,16 +221,16 @@
 
 <script>
     $(document).ready(function() {
-    var salesTable = $('#salesTable').DataTable({
-        "paging": true,
-        "searching": true,
-        "ordering": true,
-        "info": true
+        var salesTable = $('#salesTable').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true
+        });
+        $('#medicineSearch').on('keyup', function(event) {
+            event.stopPropagation();
+        });
     });
-    $('#medicineSearch').on('keyup', function(event) {
-        event.stopPropagation(); 
-    });
-});
 
     window.addEventListener('openReturnSaleModal', event => {
         $('#returnSaleModal').modal('show');
