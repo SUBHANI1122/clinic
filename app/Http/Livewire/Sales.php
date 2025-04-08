@@ -276,6 +276,8 @@ class Sales extends Component
         $this->saleCompleted = true;
         $this->saleId = $sale->id;
 
+        refreshMedicineCache();
+
         $this->fetchLatestSales();
         session()->flash('success', 'Sale completed successfully!');
     }
@@ -307,8 +309,7 @@ class Sales extends Component
 
         // If cache is empty, fetch from database and store in cache
         if (!$medicinesCache) {
-            $medicinesCache = Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'total_units','price_per_unit', 'sale_price', 'sale_price_per_unit'])->get();
-            Cache::put('all_medicines', $medicinesCache, now()->addHours(24)); // Cache for 24 hours
+            refreshMedicineCache();
         }
 
         // Filter medicines based on search input

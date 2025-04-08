@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Medicine;
 use Illuminate\Http\Request;
 use DataTables;
-use Illuminate\Support\Facades\Cache;
-
 
 class MedicineController extends Controller
 {
@@ -14,14 +12,12 @@ class MedicineController extends Controller
     {
         return view('medicines.index');
     }
+
     public function fetch()
     {
-        $medicines = Cache::remember('all_medicines', now()->addHours(24), function () {
-            return Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price','total_units', 'sale_price_per_unit'])->get();
-        });
+        $medicines = getCachedMedicines();
         return datatables()->of($medicines)->make(true);
     }
-
 
     public function store(Request $request)
     {
@@ -41,15 +37,13 @@ class MedicineController extends Controller
 
         $medicine = Medicine::create($request->all());
 
-        Cache::forget('all_medicines');
-        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'total_units','sale_price_per_unit'])->get(), now()->addHours(24));
+        refreshMedicineCache(); // use helper function
 
         return response()->json([
             'success' => true,
             'medicine' => $medicine
         ]);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -65,21 +59,14 @@ class MedicineController extends Controller
         $medicine = Medicine::findOrFail($id);
 
         $request->merge([
-            'total_units' => $request->box_quantity * $request->units_per_box
-        ]);
-
-        $request->merge([
-            'price_per_unit' => $request->price / $request->units_per_box
-        ]);
-        $request->merge([
-            'sale_price_per_unit' => $request->sale_price / $request->units_per_box
+            'total_units' => $request->box_quantity * $request->units_per_box,
+            'price_per_unit' => $request->price / $request->units_per_box,
+            'sale_price_per_unit' => $request->sale_price / $request->units_per_box,
         ]);
 
         $medicine->update($request->all());
 
-        Cache::forget('all_medicines');
-
-        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'total_units','sale_price_per_unit'])->get(), now()->addHours(24));
+        refreshMedicineCache(); // use helper function
 
         return response()->json([
             'success' => true,
@@ -87,15 +74,11 @@ class MedicineController extends Controller
         ]);
     }
 
-
-
     public function destroy($id)
     {
         Medicine::findOrFail($id)->delete();
 
-        // Refresh cache
-        Cache::forget('all_medicines');
-        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'total_units','sale_price_per_unit'])->get(), now()->addHours(24));
+        refreshMedicineCache(); // use helper function
 
         return response()->json(['success' => true]);
     }
@@ -103,12 +86,7 @@ class MedicineController extends Controller
     public function search(Request $request)
     {
         $searchTerm = strtolower($request->input('query'));
-
-        $cachedMedicines = Cache::get('all_medicines');
-
-        if (!$cachedMedicines) {
-            return response()->json([]);
-        }
+        $cachedMedicines = getCachedMedicines();
 
         $filtered = collect($cachedMedicines)->filter(function ($medicine) use ($searchTerm) {
             return strpos(strtolower($medicine['name']), $searchTerm) !== false;
