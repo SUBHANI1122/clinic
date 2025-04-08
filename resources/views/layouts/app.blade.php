@@ -105,12 +105,12 @@
                                             class="fas fa-sign-in-alt"></i>
                                         &nbsp;Today Appointments</span></a>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <a href="{{ route('create.sale') }}" class="nav-link px-0 align-middle py-0">
                                     <i class="fs-4 bi-table"></i> <span class="ms-1  text-success"><i
                                             class="fas fa-sign-in-alt"></i>
                                         &nbsp;Create Sale</span></a>
-                            </li>
+                            </li> -->
                             <li>
                                 <a href="{{ route('sales') }}" class="nav-link px-0 align-middle py-0">
                                     <i class="fs-4 bi-table"></i> <span class="ms-1  text-success"><i

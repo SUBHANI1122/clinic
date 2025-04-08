@@ -23,6 +23,7 @@
                         <th scope="col" rowspan="2">Medicine Name</th>
                         <th scope="col" rowspan="2">Size</th>
                         <th scope="col" rowspan="2">Box Quantity (Units per Box)</th>
+                        <th scope="col" rowspan="2" class="text-center">Total Quantity</th>
                         <th scope="col" colspan="2" class="text-center">Price (Per Box)</th>
                         <th scope="col" colspan="2" class="text-center">Price (Per Unit)</th>
                         <th scope="col" rowspan="2">Actions</th>
@@ -125,7 +126,11 @@
                         return `${row.box_quantity} (${row.units_per_box})`;
                     }
                 },
-
+                {
+                    data: 'total_units',
+                    name: 'total_units',
+                    searchable: true
+                },
                 {
                     data: 'price',
                     name: 'price',
