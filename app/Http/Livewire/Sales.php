@@ -162,7 +162,7 @@ class Sales extends Component
 
     public function fetchLatestSales()
     {
-        $this->latestSales = Sale::latest()->get();
+        $this->latestSales = Sale::with(['items.medicine'])->latest()->get();
     }
 
     public function addMedicine($medicineId)
@@ -307,7 +307,7 @@ class Sales extends Component
 
         // If cache is empty, fetch from database and store in cache
         if (!$medicinesCache) {
-            $medicinesCache = Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get();
+            $medicinesCache = Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'total_units','price_per_unit', 'sale_price', 'sale_price_per_unit'])->get();
             Cache::put('all_medicines', $medicinesCache, now()->addHours(24)); // Cache for 24 hours
         }
 

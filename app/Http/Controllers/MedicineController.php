@@ -17,7 +17,7 @@ class MedicineController extends Controller
     public function fetch()
     {
         $medicines = Cache::remember('all_medicines', now()->addHours(24), function () {
-            return Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get();
+            return Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price','total_units', 'sale_price_per_unit'])->get();
         });
         return datatables()->of($medicines)->make(true);
     }
@@ -42,7 +42,7 @@ class MedicineController extends Controller
         $medicine = Medicine::create($request->all());
 
         Cache::forget('all_medicines');
-        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get(), now()->addHours(24));
+        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'total_units','sale_price_per_unit'])->get(), now()->addHours(24));
 
         return response()->json([
             'success' => true,
@@ -79,7 +79,7 @@ class MedicineController extends Controller
 
         Cache::forget('all_medicines');
 
-        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get(), now()->addHours(24));
+        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'total_units','sale_price_per_unit'])->get(), now()->addHours(24));
 
         return response()->json([
             'success' => true,
@@ -95,18 +95,25 @@ class MedicineController extends Controller
 
         // Refresh cache
         Cache::forget('all_medicines');
-        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'sale_price_per_unit'])->get(), now()->addHours(24));
+        Cache::put('all_medicines', Medicine::select(['id', 'name', 'size', 'box_quantity', 'units_per_box', 'price', 'price_per_unit', 'sale_price', 'total_units','sale_price_per_unit'])->get(), now()->addHours(24));
 
         return response()->json(['success' => true]);
     }
 
     public function search(Request $request)
     {
-        $searchTerm = $request->input('query');
+        $searchTerm = strtolower($request->input('query'));
 
-        $medicines = Medicine::where('name', 'LIKE', "%{$searchTerm}%")
-            ->get();
+        $cachedMedicines = Cache::get('all_medicines');
 
-        return response()->json($medicines);
+        if (!$cachedMedicines) {
+            return response()->json([]);
+        }
+
+        $filtered = collect($cachedMedicines)->filter(function ($medicine) use ($searchTerm) {
+            return strpos(strtolower($medicine['name']), $searchTerm) !== false;
+        })->values();
+
+        return response()->json($filtered);
     }
 }

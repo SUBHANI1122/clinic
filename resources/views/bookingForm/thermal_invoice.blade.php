@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,49 +7,66 @@
     <style>
         /* Add any styles necessary for printing */
         @media print {
+            @page {
+                margin: 0; /* Removes any default margin from the page */
+            }
+
             body {
+                font-family: monospace;
+                font-size: 12px;
+                width: 80mm;
                 margin: 0;
                 padding: 0;
-                font-family: Arial, sans-serif;
-                color: #333;
+                color: #000;
             }
 
             .invoice-container {
-                width: 50%;
-                margin: 20px auto;
-                padding: 20px;
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 5px;
+                margin: 0;
             }
 
-            .header {
+            .header, .footer {
                 text-align: center;
-                margin-bottom: 20px;
-            }
-
-            .header img {
-                max-width: 100px;
                 margin-bottom: 10px;
             }
 
             .header h2 {
-                font-size: 24px;
-                color: #333;
+                font-size: 16px;
                 margin: 0;
             }
 
-            .invoice-details p {
-                font-size: 16px;
-                line-height: 1.5;
-                margin: 5px 0;
+            .header p {
+                margin: 2px 0;
+                font-size: 10px;
             }
 
-            .footer {
-                margin-top: 20px;
+            .invoice-details p {
+                margin: 2px 0;
+                font-size: 12px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+
+            th, td {
+                padding: 4px;
+                text-align: left;
+                font-size: 12px;
+                border-bottom: 1px dashed #000;
+            }
+
+            tfoot th {
+                border-top: 1px solid #000;
+            }
+
+            .thank-you {
                 text-align: center;
-                font-size: 14px;
-                color: #888;
+                margin-top: 10px;
+                font-size: 12px;
+                font-weight: bold;
             }
         }
     </style>
@@ -59,16 +75,15 @@
 <body>
     <div class="invoice-container">
         <div class="header">
-            <!-- <img src="{{ url('images/logo.png') }}" alt="Clinic Logo"> -->
-           @if($invoiceData['department'] === 'skin')
-            <h2>Skin Aesthetic Clinic</h2>
+            @if($invoiceData['department'] === 'skin')
+                <h2>Skin Aesthetic Clinic</h2>
             @else
-            <h2>Medical Care & Physiotherapy Clinic</h2>
+                <h2>Medical Care & Physiotherapy Clinic</h2>
             @endif
             <p>Citi Housing B.Block Fountain Chowk Near Sadiq Mart.03324276305</p>
         </div>
-                <h3 style="text-align: center;">Invoice # {{$invoiceData['invoice_number']}}</h3>
 
+        <h3 style="text-align: center;">Invoice # {{$invoiceData['invoice_number']}}</h3>
 
         <div class="invoice-details" style="align-items: center;">
             <p><strong>Patient Name:</strong> {{ $invoiceData['patient_name'] }}</p>
@@ -90,5 +105,4 @@
         };
     </script>
 </body>
-
 </html>
