@@ -1,4 +1,4 @@
-    <div class="container">
+<div class="container">
         <div class="row">
             <!-- Latest Sales -->
             <div class="row mt-3">
@@ -9,7 +9,9 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>Invoice (#No)</th>
+                                <th>Created At</th>
                                 <th>Total Price</th>
+                                <th>Medicines</th>
                                 <th>Invoice</th>
                                 <th>Return / Sale Details</th>
                             </tr>
@@ -19,7 +21,13 @@
                             @if ($sale->total_amount > 0)
                             <tr>
                                 <td>{{ $sale->id }}</td>
+                                <td>{{ $sale->created_at->format('d M Y h:i A') }}</td>
                                 <td>{{ number_format($sale->total_amount, 2) }}</td>
+                                <td>
+                                    @foreach ($sale->items as $item)
+                                    <span class="badge bg-primary mb-1">{{ $item->medicine->name }} (x{{ $item->quantity }})</span><br>
+                                    @endforeach
+                                </td>
                                 <td>
                                     <button wire:click="printInvoice({{ $sale->id }})" class="btn btn-info btn-sm">Print</button>
                                 </td>
@@ -151,7 +159,8 @@
                 "paging": true,
                 "searching": true,
                 "ordering": true,
-                "info": true
+                "info": true,
+                 "order": [[0, 'desc']]
             });
             $('#medicineSearch').on('keyup', function(event) {
                 event.stopPropagation();
