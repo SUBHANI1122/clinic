@@ -8,29 +8,27 @@
 
     <title>{{ config('app.name', 'Medical Care & Physiotherapy Clinic') }}</title>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap5.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
-
-
+   <!-- Styles -->
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/dataTables.bootstrap5.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/buttons.bootstrap5.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
-    <!-- jQuery and DataTables Libraries -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" defer></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" defer></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js" defer></script>
+    <!-- Scripts -->
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}" defer></script>
+    <script src="{{ asset('js/jquery.dataTables.min.js') }}" defer></script>
+    <script src="{{ asset('js/dataTables.bootstrap5.min.js') }}" defer></script>
+    <script src="{{ asset('js/dataTables.buttons.min.js') }}" defer></script>
+    <script src="{{ asset('js/buttons.bootstrap5.min.js') }}" defer></script>
+    <script src="{{ asset('js/jszip.min.js') }}" defer></script>
+    <script src="{{ asset('js/buttons.html5.min.js') }}" defer></script>
+    <script src="{{ asset('js/buttons.print.min.js') }}" defer></script>
+    <script src="{{ asset('js/sweetalert2.min.js') }}" defer></script>
 
-    <!-- DataTables Buttons and Export Scripts -->
-    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js" defer></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.bootstrap5.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" defer></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js" defer></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
 
 
     <!-- Custom Scripts -->
