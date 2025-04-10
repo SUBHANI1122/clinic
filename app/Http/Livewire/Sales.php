@@ -131,6 +131,8 @@ class Sales extends Component
         $this->returnItems = [];
         $this->returnSaleId = null;
 
+        refreshMedicineCache();
+
         // **Close modal and show success message**
         $this->dispatchBrowserEvent('closeReturnSaleModal');
         session()->flash('success', 'Sale update processed successfully!');
@@ -275,7 +277,7 @@ class Sales extends Component
         $this->totalAmount = 0;
         $this->saleCompleted = true;
         $this->saleId = $sale->id;
-
+        
         refreshMedicineCache();
 
         $this->fetchLatestSales();
@@ -305,7 +307,7 @@ class Sales extends Component
     public function render()
     {
         // Try to get medicines from cache
-        $medicinesCache = Cache::get('all_medicines');
+        $medicinesCache = getAvailableMedicines();
 
         // If cache is empty, fetch from database and store in cache
         if (!$medicinesCache) {
@@ -335,8 +337,11 @@ class Sales extends Component
             ['path' => LengthAwarePaginator::resolveCurrentPath()]
         );
 
+        $sales = Sale::latest()->get();
+
         return view('livewire.sales', [
             'medicines' => $medicines,
+            'sales' => $sales
         ]);
     }
 }

@@ -15,7 +15,7 @@ class MedicineController extends Controller
 
     public function fetch()
     {
-        $medicines = getCachedMedicines();
+        $medicines = getAllMedicines();
         return datatables()->of($medicines)->make(true);
     }
 
@@ -23,17 +23,15 @@ class MedicineController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'size' => 'required|string|max:255',
-            'box_quantity' => 'required|integer|min:0',
-            'units_per_box' => 'required|integer|min:1',
-            'price' => 'required|integer',
         ]);
 
-        $request->merge([
-            'price_per_unit' => $request->price / $request->units_per_box,
-            'total_units' => $request->box_quantity * $request->units_per_box,
-            'sale_price_per_unit' => $request->sale_price / $request->units_per_box,
-        ]);
+        if ($request->price) {
+            $request->merge([
+                'price_per_unit' => $request->price / $request->units_per_box,
+                'total_units' => $request->box_quantity * $request->units_per_box,
+                'sale_price_per_unit' => $request->sale_price / $request->units_per_box,
+            ]);
+        }
 
         $medicine = Medicine::create($request->all());
 
@@ -86,7 +84,7 @@ class MedicineController extends Controller
     public function search(Request $request)
     {
         $searchTerm = strtolower($request->input('query'));
-        $cachedMedicines = getCachedMedicines();
+        $cachedMedicines = getAllMedicines();
 
         $filtered = collect($cachedMedicines)->filter(function ($medicine) use ($searchTerm) {
             return strpos(strtolower($medicine['name']), $searchTerm) !== false;
