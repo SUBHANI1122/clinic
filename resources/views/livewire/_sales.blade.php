@@ -21,7 +21,17 @@
                 <td>{{ number_format($sale->total_amount, 2) }}</td>
                 <td>
                     @foreach ($sale->items as $item)
-                    <span class="badge bg-primary mb-1">{{ $item->medicine->name }} (x{{ $item->quantity }})</span><br>
+                    @if ($item->medicine)
+                    @if ($item->medicine->deleted_at)
+                    <span class="badge bg-secondary mb-1">
+                        {{ $item->medicine->name }} [Deleted] (x{{ $item->quantity }})
+                    </span><br>
+                    @else
+                    <span class="badge bg-primary mb-1">
+                        {{ $item->medicine->name }} (x{{ $item->quantity }})
+                    </span><br>
+                    @endif
+                    @endif
                     @endforeach
                 </td>
                 <td>
