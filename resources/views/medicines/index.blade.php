@@ -21,9 +21,10 @@
                     <tr>
                         <th scope="col" rowspan="2">#</th>
                         <th scope="col" rowspan="2">Medicine Name</th>
-                        <th scope="col" rowspan="2">Size</th>
                         <th scope="col" rowspan="2">Box Quantity (Units per Box)</th>
-                        <th scope="col" rowspan="2" class="text-center">Total Quantity</th>
+                        <th scope="col" rowspan="2" class="text-center">Total Medicines</th>
+                        <th scope="col" rowspan="2" class="text-center">Minimum Quanitity</th>
+                        <th scope="col" rowspan="2" class="text-center">Expirey Date</th>
                         <th scope="col" colspan="2" class="text-center">Price (Per Box)</th>
                         <th scope="col" colspan="2" class="text-center">Price (Per Unit)</th>
                         <th scope="col" rowspan="2">Actions</th>
@@ -66,13 +67,17 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="boxQuantity" class="form-label fw-semibold">Box Quantity</label>
                         <input type="number" class="form-control" id="boxQuantity" name="box_quantity" required placeholder="Enter box quantity">
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="unitsPerBox" class="form-label fw-semibold">Units per Box</label>
                         <input type="number" class="form-control" id="unitsPerBox" name="units_per_box" required placeholder="Enter units per box">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="unitsPerBox" class="form-label fw-semibold">Total Units</label>
+                        <input type="number" class="form-control" id="total_units" name="total_units" required placeholder="Enter units per box">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -83,6 +88,16 @@
                     <div class="col-md-6">
                         <label for="pricePerBox" class="form-label fw-semibold">Sale Price per Box</label>
                         <input type="text" class="form-control" id="sale_price" name="sale_price" required placeholder="Enter sale price per box">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="pricePerBox" class="form-label fw-semibold">Minimum Quantity</label>
+                        <input type="number" class="form-control" id="minimum_quantity" name="minimum_quantity" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="pricePerBox" class="form-label fw-semibold">Expirey Date</label>
+                        <input type="date" class="form-control" id="expiry_date" name="expiry_date" required>
                     </div>
                 </div>
             </div>
@@ -102,21 +117,21 @@
             processing: true,
             serverSide: true,
             ajax: "{{ route('medicines.fetch') }}",
-             order: [[0, 'desc']],
+            order: [
+                [0, 'desc']
+            ],
             columns: [{
                     data: 'id',
                     name: 'id',
                     searchable: true
                 },
                 {
-                    data: 'name',
+                    data: 'null',
                     name: 'name',
-                    searchable: true
-                },
-                {
-                    data: 'size',
-                    name: 'size',
-                    searchable: true
+                    searchable: true,
+                    render: function(data, type, row) {
+                        return `${row.name} (${row.size})`;
+                    }
                 },
                 {
                     data: null,
@@ -131,6 +146,17 @@
                     name: 'total_units',
                     searchable: true
                 },
+                {
+                    data: 'minimum_quantity',
+                    name: 'minimum_quantity',
+                    searchable: true
+                },
+                {
+                    data: 'expiry_date',
+                    name: 'expiry_date',
+                    searchable: true
+                },
+
                 {
                     data: 'price',
                     name: 'price',
@@ -163,7 +189,10 @@
                         data-size="${row.size}" 
                         data-box_quantity="${row.box_quantity}" 
                         data-units_per_box="${row.units_per_box}"
-                        data-price="${row.price}" 
+                        data-price="${row.price}"
+                        data-expiry_date="${row.expiry_date}"
+                        data-minimum_quantity="${row.minimum_quantity}"
+                        data-total_units="${row.total_units}" 
                         data-sale_price="${row.sale_price}">
                         Edit
                     </button>
@@ -173,91 +202,113 @@
                     orderable: false,
                     searchable: false
                 }
-            ]
+            ],
+            rowCallback: function(row, data, index) {
+                let minQty = parseInt(data.minimum_quantity);
+                let totalUnits = parseInt(data.total_units);
+                let expiryDate = new Date(data.expiry_date);
+                let today = new Date();
+                let diffInDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+
+                $(row).removeClass('table-danger table-warning');
+
+                if (!isNaN(minQty) && totalUnits <= minQty) {
+                    $(row).addClass('table-danger');
+                } else if (!isNaN(diffInDays) && diffInDays <= 2) {
+                    $(row).addClass('table-warning');
+                }
+            }
         });
 
 
 
-$('#newMedicineBtn').on('click', function() {
-    $('#medicineModal').modal('show');
-    $('#medicineModalTitle').text('Add New Medicine');
-    $('#medicineForm')[0].reset();
-    $('#medicineId').val('');
-});
+        $('#newMedicineBtn').on('click', function() {
+            $('#medicineModal').modal('show');
+            $('#medicineModalTitle').text('Add New Medicine');
+            $('#medicineForm')[0].reset();
+            $('#medicineId').val('');
+        });
 
-$(document).on('click', '.editMedicine', function() {
-    $('#medicineModal').modal('show');
-    $('#medicineModalTitle').text('Edit Medicine');
-    $('#medicineId').val($(this).data('id'));
-    $('#medicineName').val($(this).data('name'));
-    $('#medicineSize').val($(this).data('size'));
-    $('#boxQuantity').val($(this).data('box_quantity'));
-    $('#unitsPerBox').val($(this).data('units_per_box'));
-    $('#price').val($(this).data('price'));
-    $('#sale_price').val($(this).data('sale_price'));
-});
+        $(document).on('click', '.editMedicine', function() {
+            $('#medicineModal').modal('show');
+            $('#medicineModalTitle').text('Edit Medicine');
+            $('#medicineId').val($(this).data('id'));
+            $('#medicineName').val($(this).data('name'));
+            $('#medicineSize').val($(this).data('size'));
+            $('#boxQuantity').val($(this).data('box_quantity'));
+            $('#unitsPerBox').val($(this).data('units_per_box'));
+            $('#price').val($(this).data('price'));
+            $('#sale_price').val($(this).data('sale_price'));
+            $('#minimum_quantity').val($(this).data('minimum_quantity'));
+            $('#total_units').val($(this).data('total_units'));
+            $('#expiry_date').val($(this).data('expiry_date'));
+        });
 
-// Save or update medicine via AJAX
-$('#saveMedicine').on('click', function() {
-    const medicineId = $('#medicineId').val();
-    const formData = {
-        name: $('#medicineName').val(),
-        size: $('#medicineSize').val(),
-        box_quantity: $('#boxQuantity').val(),
-        units_per_box: $('#unitsPerBox').val(),
-        price: $('#price').val(),
-        sale_price: $('#sale_price').val(),
-        _token: "{{ csrf_token() }}"
-    };
+        // Save or update medicine via AJAX
+        $('#saveMedicine').on('click', function() {
+            const medicineId = $('#medicineId').val();
+            const formData = {
+                name: $('#medicineName').val(),
+                size: $('#medicineSize').val(),
+                box_quantity: $('#boxQuantity').val(),
+                units_per_box: $('#unitsPerBox').val(),
+                price: $('#price').val(),
+                sale_price: $('#sale_price').val(),
 
-    let url = "{{ route('medicines.store') }}";
-    let method = 'POST';
+                total_units: $('#total_units').val(),
+                minimum_quantity: $('#minimum_quantity').val(),
+                expiry_date: $('#expiry_date').val(),
+                _token: "{{ csrf_token() }}"
+            };
 
-    if (medicineId) {
-        url = `/medicines/${medicineId}`;
-        formData._method = 'PATCH'; // Use PATCH for updates
-    }
+            let url = "{{ route('medicines.store') }}";
+            let method = 'POST';
 
-    $.ajax({
-        url: url,
-        method: 'POST', // Always use POST; PATCH is set via _method
-        data: formData,
-        success: function(response) {
-            if (response.success) {
-                $('#medicineModal').modal('hide');
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Medicine',
-                    text: 'Medicine saved successfully!',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                });
-                table.ajax.reload();
-                $('#medicineForm')[0].reset();
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Medicine',
-                    text: 'Failed to save medicine!',
-                    customClass: {
-                        confirmButton: 'btn btn-danger'
-                    }
-                });
+            if (medicineId) {
+                url = `/medicines/${medicineId}`;
+                formData._method = 'PATCH'; // Use PATCH for updates
             }
-        },
-        error: function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Medicine',
-                text: 'An error occurred. Please try again.',
-                customClass: {
-                    confirmButton: 'btn btn-danger'
+
+            $.ajax({
+                url: url,
+                method: 'POST', // Always use POST; PATCH is set via _method
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        $('#medicineModal').modal('hide');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Medicine',
+                            text: 'Medicine saved successfully!',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        });
+                        table.ajax.reload();
+                        $('#medicineForm')[0].reset();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Medicine',
+                            text: 'Failed to save medicine!',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Medicine',
+                        text: 'An error occurred. Please try again.',
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        }
+                    });
                 }
             });
-        }
-    });
-});
+        });
 
 
 

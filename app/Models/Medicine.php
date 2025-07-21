@@ -20,6 +20,8 @@ class Medicine extends Model
         'sale_price',
         'price_per_unit',
         'sale_price_per_unit',
-        'total_units'
+        'total_units',
+        'expiry_date',
+        'minimum_quantity'
     ];
 }

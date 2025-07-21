@@ -28,7 +28,7 @@ class MedicineController extends Controller
         if ($request->price) {
             $request->merge([
                 'price_per_unit' => $request->price / $request->units_per_box,
-                'total_units' => $request->box_quantity * $request->units_per_box,
+                // 'total_units' => $request->box_quantity * $request->units_per_box,
                 'sale_price_per_unit' => $request->sale_price / $request->units_per_box,
             ]);
         }
@@ -57,7 +57,7 @@ class MedicineController extends Controller
         $medicine = Medicine::findOrFail($id);
 
         $request->merge([
-            'total_units' => $request->box_quantity * $request->units_per_box,
+            // 'total_units' => $request->box_quantity * $request->units_per_box,
             'price_per_unit' => $request->price / $request->units_per_box,
             'sale_price_per_unit' => $request->sale_price / $request->units_per_box,
         ]);

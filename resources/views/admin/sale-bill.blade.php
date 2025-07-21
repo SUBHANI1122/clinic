@@ -73,7 +73,7 @@
 <body>
     <div class="invoice-container">
         <div class="header">
-            <h2>Medical Care & Physio</h2>
+            <h2>Medical care & Physiotherapy Clinic</h2>
             <p>Citi Housing B.Block</p>
             <p>Fountain Chowk, Sadiq Mart</p>
             <p>0332-4276305</p>
@@ -81,7 +81,7 @@
 
         <div class="invoice-details">
             <p><strong>Invoice #:</strong> {{ $sale->id }}</p>
-            <p><strong>Date:</strong> {{ $sale->created_at->format('d M Y') }}</p>
+            <p><strong>Date:</strong> {{ $sale->created_at->format('d M Y h:i A') }}</p>
             <p><strong>Sold by:</strong> {{ $sale->user->name }}</p>
         </div>
 
@@ -97,7 +97,7 @@
             <tbody>
                 @foreach ($sale->items as $item)
                     <tr>
-                        <td>{{ $item->medicine->name }}</td>
+                        <td>{{ $item->medicine->name }} - {{ $item->medicine->size }}</td>
                         <td>{{ $item->quantity }}</td>
                         <td>{{ number_format($item->sale_price, 2) }}</td>
                         <td>{{ number_format($item->subtotal, 2) }}</td>
@@ -114,6 +114,7 @@
 
         <div class="thank-you">
             <p>Thank you for your purchase!</p>
+            <p>Fridge items and syurps are not Returnable</p>
         </div>
     </div>
 
